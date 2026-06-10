@@ -5,6 +5,7 @@
 сохраняя текущий `role`, `city_id`, `locale` и опт-ин — это пользовательские
 настройки, перетирать их при каждом логине нельзя.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -94,6 +95,7 @@ class UserRepository(BaseRepository[User]):
 
 
 # ----- helpers -----
+
 
 def _infer_locale(tg_language_code: str | None) -> Locale:
     if not tg_language_code:

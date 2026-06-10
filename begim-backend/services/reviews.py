@@ -7,6 +7,7 @@
 
 После создания/удаления — денормализуем `SellerProfile.rating_avg`/`reviews_count`.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

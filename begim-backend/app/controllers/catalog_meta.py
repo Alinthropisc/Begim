@@ -1,4 +1,5 @@
 """Публичные справочники: города и категории. Кэш в Redis позже."""
+
 from __future__ import annotations
 
 from litestar import Controller, get

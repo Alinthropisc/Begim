@@ -1,4 +1,5 @@
 """Реестр провайдеров. Добавить новый = одна строка."""
+
 from __future__ import annotations
 
 from models.enums import PaymentProvider as PaymentProviderEnum

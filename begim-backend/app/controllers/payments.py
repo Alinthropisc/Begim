@@ -1,4 +1,5 @@
 """POST /orders/{id}/payments, GET /payments/{id}, POST /webhooks/{provider}."""
+
 from __future__ import annotations
 
 from urllib.parse import parse_qsl
@@ -95,9 +96,7 @@ class WebhooksController(Controller):
             payload = await request.json()
         except Exception:
             payload = {}
-        result = await payment_service.handle_webhook(
-            PaymentProviderEnum.PAYME, headers, raw, payload
-        )
+        result = await payment_service.handle_webhook(PaymentProviderEnum.PAYME, headers, raw, payload)
         return Response(content=result or {"ok": True}, status_code=200)
 
     @post("/click")
@@ -106,7 +105,5 @@ class WebhooksController(Controller):
         headers = {k.decode(): v.decode() for k, v in request.scope["headers"]}
         # Click шлёт application/x-www-form-urlencoded
         payload = dict(parse_qsl(raw.decode("utf-8", errors="ignore"), keep_blank_values=True))
-        result = await payment_service.handle_webhook(
-            PaymentProviderEnum.CLICK, headers, raw, payload
-        )
+        result = await payment_service.handle_webhook(PaymentProviderEnum.CLICK, headers, raw, payload)
         return Response(content=result or {"ok": True}, status_code=200)

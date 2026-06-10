@@ -1,4 +1,5 @@
 """Public listing + seller CRUD products."""
+
 from __future__ import annotations
 
 from litestar import Controller, delete, get, patch, post
@@ -63,9 +64,15 @@ class ProductController(Controller):
     ) -> ProductListOut:
         items, total = await product_service.list_public(
             ListProductsInput(
-                city_id=city, category_id=category, seller_id=seller,
-                q=q, price_min=price_min, price_max=price_max,
-                sort=sort, offset=offset, limit=limit,
+                city_id=city,
+                category_id=category,
+                seller_id=seller,
+                q=q,
+                price_min=price_min,
+                price_max=price_max,
+                sort=sort,
+                offset=offset,
+                limit=limit,
             )
         )
         return ProductListOut(

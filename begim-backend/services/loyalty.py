@@ -8,6 +8,7 @@
 - Materialize фильтрует на уровне SQL: тех, кто без opt-in, в `BroadcastDelivery`
   не попадают вовсе. Это снимает риск отправки случайно.
 """
+
 from __future__ import annotations
 
 import secrets
@@ -55,6 +56,7 @@ class Conflict(LoyaltyError):
 
 # ----- Groups -----
 
+
 @dataclass(slots=True)
 class GroupCreateInput:
     name: str
@@ -101,7 +103,7 @@ class SellerGroupService:
                 group_id=group.id,
                 user_id=user_id,
                 source=GroupMemberSource.INVITE,
-                opt_in_marketing=True,   # join по приглашению = осознанный opt-in
+                opt_in_marketing=True,  # join по приглашению = осознанный opt-in
                 opt_in_at=datetime.now(UTC),
                 channels={"telegram_dm": True, "in_app_push": True},
             )
@@ -112,6 +114,7 @@ class SellerGroupService:
 
 
 # ----- Contacts -----
+
 
 @dataclass(slots=True)
 class ImportContactInput:
@@ -138,9 +141,7 @@ class ContactsService:
     def __init__(self, uow_factory=UnitOfWork) -> None:
         self._uow_factory = uow_factory
 
-    async def import_contacts(
-        self, user_id: int, items: list[ImportContactInput]
-    ) -> ImportContactsResult:
+    async def import_contacts(self, user_id: int, items: list[ImportContactInput]) -> ImportContactsResult:
         async with self._uow_factory() as uow:
             seller = await uow.sellers.get_by_user_id(user_id)
             if seller is None:
@@ -160,11 +161,7 @@ class ContactsService:
                     continue
 
                 # Матч с существующим User по phone_hash
-                user_match = (
-                    await uow.session.execute(
-                        select(User).where(User.phone_hash == ph).limit(1)
-                    )
-                ).scalar_one_or_none()
+                user_match = (await uow.session.execute(select(User).where(User.phone_hash == ph).limit(1))).scalar_one_or_none()
                 contact = SellerContact(
                     seller_id=seller.id,
                     phone_hash=ph,
@@ -180,9 +177,7 @@ class ContactsService:
                 if user_match is not None:
                     matched += 1
 
-            return ImportContactsResult(
-                imported=imported, matched=matched, skipped=skipped, contact_ids=ids
-            )
+            return ImportContactsResult(imported=imported, matched=matched, skipped=skipped, contact_ids=ids)
 
     async def list_my(self, user_id: int, *, offset: int = 0, limit: int = 100):
         async with self._uow_factory() as uow:
@@ -193,6 +188,7 @@ class ContactsService:
 
 
 # ----- Broadcasts: Strategy для таргета -----
+
 
 @dataclass(slots=True)
 class BroadcastCreateInput:
@@ -260,18 +256,8 @@ class RepeatBuyersTarget(BroadcastTarget):
     async def materialize(self, uow: UnitOfWork, broadcast: Broadcast) -> int:
         from sqlalchemy import func
 
-        sub = (
-            select(Order.buyer_id, func.count(Order.id).label("cnt"))
-            .where(Order.seller_id == broadcast.seller_id)
-            .group_by(Order.buyer_id)
-            .having(func.count(Order.id) >= 2)
-            .subquery()
-        )
-        stmt = (
-            select(User.id)
-            .join(sub, sub.c.buyer_id == User.id)
-            .where(User.marketing_opt_in.is_(True), User.is_blocked.is_(False))
-        )
+        sub = select(Order.buyer_id, func.count(Order.id).label("cnt")).where(Order.seller_id == broadcast.seller_id).group_by(Order.buyer_id).having(func.count(Order.id) >= 2).subquery()
+        stmt = select(User.id).join(sub, sub.c.buyer_id == User.id).where(User.marketing_opt_in.is_(True), User.is_blocked.is_(False))
         user_ids = [r[0] for r in (await uow.session.execute(stmt)).all()]
         return await _bulk_insert_deliveries(uow, broadcast.id, user_ids)
 

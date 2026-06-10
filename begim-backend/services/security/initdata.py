@@ -13,6 +13,7 @@ replay-атак с захваченным initData.
 
 Этот модуль — **чистая функция без I/O**, легко тестируется юнитами.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -44,12 +45,12 @@ class InitDataMalformed(InitDataError):
 class TelegramInitData:
     """Распарсенные и провалидированные данные Telegram Mini App."""
 
-    user: dict[str, Any]            # {id, first_name, last_name, username, language_code, photo_url, is_premium}
-    auth_date: int                  # unix seconds
+    user: dict[str, Any]  # {id, first_name, last_name, username, language_code, photo_url, is_premium}
+    auth_date: int  # unix seconds
     query_id: str | None
-    start_param: str | None         # значение из ?startapp=... (deep-link)
+    start_param: str | None  # значение из ?startapp=... (deep-link)
     chat_instance: str | None
-    raw: dict[str, str]             # все остальные ключи как есть
+    raw: dict[str, str]  # все остальные ключи как есть
 
     @property
     def tg_id(self) -> int:

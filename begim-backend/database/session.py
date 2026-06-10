@@ -14,6 +14,7 @@
 Под пиком: 20 постоянных + 40 overflow = 60 одновременных запросов. Если упёрлись —
 `pool_timeout` (30с) удержит запросы в очереди вместо мгновенного 5xx.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -124,6 +125,7 @@ async def warmup_pool(engine: AsyncEngine, n: int) -> None:
     Без прогрева первые n параллельных запросов платят за TCP+auth (~5-30ms каждый).
     После warmup'а первые ответы летят без задержки — критично для холодного старта Granian.
     """
+
     async def _ping_once() -> None:
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))

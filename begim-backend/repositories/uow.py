@@ -8,6 +8,7 @@
 Репозитории создаются **лениво** при первом доступе (property) — добавление
 нового репо = одна property, без правки фабрики.
 """
+
 from __future__ import annotations
 
 from types import TracebackType
@@ -45,9 +46,9 @@ if TYPE_CHECKING:
 
 class UnitOfWork:
     """Использование:
-        async with UnitOfWork() as uow:
-            user = await uow.users.get_by_tg_id(123)
-            # commit() произойдёт автоматически на выходе из блока
+    async with UnitOfWork() as uow:
+        user = await uow.users.get_by_tg_id(123)
+        # commit() произойдёт автоматически на выходе из блока
     """
 
     def __init__(self) -> None:

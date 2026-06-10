@@ -4,6 +4,7 @@
     uv run python -m scripts.seed
 Идемпотентно — повторный запуск не дублирует записи.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -22,16 +23,11 @@ from models.user import User
 
 
 CITIES: list[dict] = [
-    dict(slug="kokand", name_uz="Qoʻqon", name_ru="Коканд", name_en="Kokand",
-         region="Fergana Region", is_active=True, sort_order=10),
-    dict(slug="namangan", name_uz="Namangan", name_ru="Наманган", name_en="Namangan",
-         region="Namangan Region", is_active=False, sort_order=20),
-    dict(slug="andijan", name_uz="Andijon", name_ru="Андижан", name_en="Andijan",
-         region="Andijan Region", is_active=False, sort_order=30),
-    dict(slug="fergana", name_uz="Fargʻona", name_ru="Фергана", name_en="Fergana",
-         region="Fergana Region", is_active=False, sort_order=40),
-    dict(slug="tashkent", name_uz="Toshkent", name_ru="Ташкент", name_en="Tashkent",
-         region="Tashkent", is_active=False, sort_order=100),
+    dict(slug="kokand", name_uz="Qoʻqon", name_ru="Коканд", name_en="Kokand", region="Fergana Region", is_active=True, sort_order=10),
+    dict(slug="namangan", name_uz="Namangan", name_ru="Наманган", name_en="Namangan", region="Namangan Region", is_active=False, sort_order=20),
+    dict(slug="andijan", name_uz="Andijon", name_ru="Андижан", name_en="Andijan", region="Andijan Region", is_active=False, sort_order=30),
+    dict(slug="fergana", name_uz="Fargʻona", name_ru="Фергана", name_en="Fergana", region="Fergana Region", is_active=False, sort_order=40),
+    dict(slug="tashkent", name_uz="Toshkent", name_ru="Ташкент", name_en="Tashkent", region="Tashkent", is_active=False, sort_order=100),
 ]
 
 
@@ -98,51 +94,30 @@ async def upsert_categories() -> None:
 
 # (tg_id, username, brand_name, slug, avatar_url, display_name)
 SELLERS: list[tuple[int, str, str, str, str, str]] = [
-    (90000001, "dilnoza_opa", "Dilnoza opa", "dilnoza-opa",
-     "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80", "Dilnoza"),
-    (90000002, "gulnora_xola", "Gulnora xola", "gulnora-xola",
-     "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80", "Gulnora"),
-    (90000003, "malika_baker", "Malika", "malika-baker",
-     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80", "Malika"),
+    (90000001, "dilnoza_opa", "Dilnoza opa", "dilnoza-opa", "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80", "Dilnoza"),
+    (90000002, "gulnora_xola", "Gulnora xola", "gulnora-xola", "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80", "Gulnora"),
+    (90000003, "malika_baker", "Malika", "malika-baker", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80", "Malika"),
 ]
 
 # (seller_slug, category_slug, title, description, price_sum, photo_url, tags)
 PRODUCTS: list[tuple[str, str, str, str, int, str, list[str]]] = [
-    ("dilnoza-opa", "cakes", "Medovik torti",
-     "Klassik medovik — asal bilan pishirilgan nozik qatlamlar va qaymoqli krem.",
-     180_000, "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80", ["halal"]),
-    ("dilnoza-opa", "bento-cakes", "Bento tort",
-     "Kichik bento-tort — shaxsiy tabrik uchun ideal.",
-     90_000, "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80", ["halal", "custom"]),
-    ("gulnora-xola", "chakchak", "Chak-chak",
-     "Milliy shirinlik — asal bilan shakllangan qizartirilgan xamir.",
-     95_000, "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=800&q=80", ["halal"]),
-    ("gulnora-xola", "halva", "Yong'oqli halva",
-     "An'anaviy yong'oqli halva, uy sharoitida tayyorlangan.",
-     70_000, "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=800&q=80", ["halal"]),
-    ("malika-baker", "cookies", "Pechenye assorti",
-     "Uy pechenyesi to'plami — choy uchun mukammal.",
-     55_000, "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800&q=80", ["halal"]),
-    ("malika-baker", "cupcakes", "Kapkeyklar (6 dona)",
-     "Yumshoq kapkeyklar krem bilan — 6 dona to'plam.",
-     85_000, "https://images.unsplash.com/photo-1426869981800-95ebf51ce900?w=800&q=80", ["halal"]),
-    ("malika-baker", "cakes", "Tug'ilgan kun torti",
-     "Bayram torti — buyurtma bo'yicha bezatiladi.",
-     250_000, "https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=800&q=80", ["halal", "custom"]),
+    ("dilnoza-opa", "cakes", "Medovik torti", "Klassik medovik — asal bilan pishirilgan nozik qatlamlar va qaymoqli krem.", 180_000, "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80", ["halal"]),
+    ("dilnoza-opa", "bento-cakes", "Bento tort", "Kichik bento-tort — shaxsiy tabrik uchun ideal.", 90_000, "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80", ["halal", "custom"]),
+    ("gulnora-xola", "chakchak", "Chak-chak", "Milliy shirinlik — asal bilan shakllangan qizartirilgan xamir.", 95_000, "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=800&q=80", ["halal"]),
+    ("gulnora-xola", "halva", "Yong'oqli halva", "An'anaviy yong'oqli halva, uy sharoitida tayyorlangan.", 70_000, "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=800&q=80", ["halal"]),
+    ("malika-baker", "cookies", "Pechenye assorti", "Uy pechenyesi to'plami — choy uchun mukammal.", 55_000, "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800&q=80", ["halal"]),
+    ("malika-baker", "cupcakes", "Kapkeyklar (6 dona)", "Yumshoq kapkeyklar krem bilan — 6 dona to'plam.", 85_000, "https://images.unsplash.com/photo-1426869981800-95ebf51ce900?w=800&q=80", ["halal"]),
+    ("malika-baker", "cakes", "Tug'ilgan kun torti", "Bayram torti — buyurtma bo'yicha bezatiladi.", 250_000, "https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=800&q=80", ["halal", "custom"]),
 ]
 
 
 async def upsert_sellers() -> None:
     """Создаёт тестовых продавцов (User role=seller + verified SellerProfile)."""
     async with db_session() as session:
-        active_city = (
-            await session.execute(select(City).where(City.slug == "kokand"))
-        ).scalar_one_or_none()
+        active_city = (await session.execute(select(City).where(City.slug == "kokand"))).scalar_one_or_none()
         city_id = active_city.id if active_city else None
 
-        existing = {
-            s.slug for s in (await session.execute(select(SellerProfile))).scalars().all()
-        }
+        existing = {s.slug for s in (await session.execute(select(SellerProfile))).scalars().all()}
         added = 0
         for tg_id, username, brand, slug, avatar, display in SELLERS:
             if slug in existing:
@@ -170,15 +145,9 @@ async def upsert_sellers() -> None:
 async def upsert_products() -> None:
     """Создаёт опубликованные товары с фото у тестовых продавцов."""
     async with db_session() as session:
-        sellers = {
-            s.slug: s for s in (await session.execute(select(SellerProfile))).scalars().all()
-        }
-        cats = {
-            c.slug: c for c in (await session.execute(select(Category))).scalars().all()
-        }
-        existing_titles = {
-            t for (t,) in (await session.execute(select(Product.title))).all()
-        }
+        sellers = {s.slug: s for s in (await session.execute(select(SellerProfile))).scalars().all()}
+        cats = {c.slug: c for c in (await session.execute(select(Category))).scalars().all()}
+        existing_titles = {t for (t,) in (await session.execute(select(Product.title))).all()}
         now = datetime.now(UTC)
         added = 0
         for seller_slug, cat_slug, title, desc, price_sum, photo, tags in PRODUCTS:

@@ -3,6 +3,7 @@
 `payload` — JSON с deep-link, превью, action кнопками. `read_at` ставится из
 Mini App. Доставка в TG — отдельный воркер (arq), факт доставки в `delivered_at`.
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 

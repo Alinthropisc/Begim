@@ -24,28 +24,11 @@ class LoggerManager:
     _log_dir: Path = Path("storage/logs")
 
     # Форматы
-    CONSOLE_FORMAT = (
-        "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-        "<level>{level: <8}</level> | "
-        "<cyan>{extra[name]}</cyan> | "
-        "<level>{message}</level>"
-    )
+    CONSOLE_FORMAT = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{extra[name]}</cyan> | <level>{message}</level>"
 
-    FILE_FORMAT = (
-        "{time:YYYY-MM-DD HH:mm:ss.SSS} | "
-        "{level: <8} | "
-        "{extra[name]} | "
-        "{name}:{function}:{line} | "
-        "{message}"
-    )
+    FILE_FORMAT = "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {extra[name]} | {name}:{function}:{line} | {message}"
 
-    JSON_FORMAT = (
-        '{{"time":"{time:YYYY-MM-DDTHH:mm:ss.SSSZ}",'
-        '"level":"{level}",'
-        '"module":"{extra[name]}",'
-        '"location":"{name}:{function}:{line}",'
-        '"message":"{message}"}}'
-    )
+    JSON_FORMAT = '{{"time":"{time:YYYY-MM-DDTHH:mm:ss.SSSZ}","level":"{level}","module":"{extra[name]}","location":"{name}:{function}:{line}","message":"{message}"}}'
 
     @classmethod
     def setup(cls, log_dir: str | Path = "storage/logs") -> None:
@@ -204,6 +187,7 @@ class BoundLogger:
 
 
 # === Shortcut функции ===
+
 
 @lru_cache(maxsize=32)
 def get_logger(name: str = "app") -> BoundLogger:

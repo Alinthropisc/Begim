@@ -4,6 +4,7 @@
 рейтинг) — отдельный объект со своим `.apply(stmt)`. Композиция через `&`.
 Добавить новый фильтр = новый класс, репозиторий не трогаем.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -18,6 +19,7 @@ from repositories.base_repository import BaseRepository
 
 
 # ----- Specifications -----
+
 
 class ProductSpec:
     """Базовый интерфейс спецификации."""
@@ -97,10 +99,7 @@ class FullTextSearch(ProductSpec):
         if not terms:
             # запасной путь — обычный LIKE по title
             return stmt.where(Product.title.ilike(f"%{q}%"))
-        return stmt.where(
-            text("MATCH(products.title, products.description) AGAINST (:ftq IN BOOLEAN MODE)")
-            .bindparams(ftq=terms)
-        )
+        return stmt.where(text("MATCH(products.title, products.description) AGAINST (:ftq IN BOOLEAN MODE)").bindparams(ftq=terms))
 
 
 # ----- Sort strategies -----
@@ -115,15 +114,12 @@ SORT_STRATEGIES = {
 
 # ----- Repository -----
 
+
 class ProductRepository(BaseRepository[Product]):
     model = Product
 
     async def get_with_photos(self, product_id: int) -> Product | None:
-        stmt = (
-            select(Product)
-            .where(Product.id == product_id, Product.is_deleted.is_(False))
-            .options(selectinload(Product.photos), selectinload(Product.seller))
-        )
+        stmt = select(Product).where(Product.id == product_id, Product.is_deleted.is_(False)).options(selectinload(Product.photos), selectinload(Product.seller))
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 

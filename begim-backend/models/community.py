@@ -4,6 +4,7 @@
 пост от продавца и привязан к товару — рендерим кнопку «Открыть товар».
 Лента ранжируется в сервисе: свежесть × city_match × follower_signal.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import JSON, ForeignKey, Text, UniqueConstraint
@@ -37,9 +38,7 @@ class CommunityPost(Base, IdMixin, TimestampMixin, SoftDeleteMixin):
 
 
 class PostLike(Base, IdMixin, TimestampMixin):
-    __table_args__ = (
-        UniqueConstraint("post_id", "user_id", name="uq_post_likes_post_id_user_id"),
-    )
+    __table_args__ = (UniqueConstraint("post_id", "user_id", name="uq_post_likes_post_id_user_id"),)
     post_id: Mapped[int] = mapped_column(ForeignKey("community_posts.id", ondelete="CASCADE"), index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
 

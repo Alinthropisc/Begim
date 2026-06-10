@@ -4,6 +4,7 @@
 колонки при каждом lookup'е покупателя. Создаётся, когда пользователь нажимает
 «стать продавцом» в Mini App и проходит модерацию.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum as SAEnum, ForeignKey, Numeric, String, Text

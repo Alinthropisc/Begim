@@ -7,6 +7,7 @@ photo_url, language_code), кладётся сюда. Роль (`customer`/`sell
 Телефон храним как соль+SHA-256 для матчинга по импортированным контактам;
 сам телефон в БД не пишем — это снимает целый класс юридических вопросов.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import BigInteger, Enum as SAEnum, ForeignKey, String

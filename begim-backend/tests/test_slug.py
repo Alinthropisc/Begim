@@ -1,25 +1,32 @@
 """Тесты генерации slug продавца: транслит RU/UZ + латиница. Без БД."""
+
 import pytest
 
 from services.sellers import _slugify
 
 
 class TestSlugify:
-    @pytest.mark.parametrize("text,expected", [
-        ("Bento Cakes", "bento-cakes"),
-        ("Tortlar", "tortlar"),
-        ("Begim Sweets", "begim-sweets"),
-    ])
+    @pytest.mark.parametrize(
+        "text,expected",
+        [
+            ("Bento Cakes", "bento-cakes"),
+            ("Tortlar", "tortlar"),
+            ("Begim Sweets", "begim-sweets"),
+        ],
+    )
     def test_latin(self, text, expected):
         assert _slugify(text) == expected
 
     def test_strips_diacritics(self):
         assert _slugify("Café Délice") == "cafe-delice"
 
-    @pytest.mark.parametrize("text,expected", [
-        ("Торты", "torty"),
-        ("Сладкоежка", "sladkoezhka"),
-    ])
+    @pytest.mark.parametrize(
+        "text,expected",
+        [
+            ("Торты", "torty"),
+            ("Сладкоежка", "sladkoezhka"),
+        ],
+    )
     def test_cyrillic_translit(self, text, expected):
         assert _slugify(text) == expected
 

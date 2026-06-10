@@ -4,6 +4,7 @@
 обновляет статусы, ставит себя в очередь снова. Когда пусто — финализирует
 broadcast в `SENT`.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone, UTC
@@ -21,8 +22,8 @@ from models.enums import BroadcastCta, BroadcastDeliveryStatus, BroadcastStatus
 from models.user import User
 
 
-BATCH = 25                 # TG лимит ~30 msg/s; берём с запасом
-COOLDOWN_SEC = 1.0         # пауза между батчами
+BATCH = 25  # TG лимит ~30 msg/s; берём с запасом
+COOLDOWN_SEC = 1.0  # пауза между батчами
 
 
 async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
@@ -63,11 +64,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
         user_ids = [int(r[1]) for r in rows]
 
         # Помечаем `sending`, чтобы повторный батч их не подцепил.
-        await session.execute(
-            update(BroadcastDelivery)
-            .where(BroadcastDelivery.id.in_(delivery_ids))
-            .values(status=BroadcastDeliveryStatus.SENDING)
-        )
+        await session.execute(update(BroadcastDelivery).where(BroadcastDelivery.id.in_(delivery_ids)).values(status=BroadcastDeliveryStatus.SENDING))
         # snapshot нужных полей до выхода из транзакции
         title = broadcast.title
         body = broadcast.body
@@ -75,12 +72,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
         cta_product_id = broadcast.cta_product_id
         cta_url = broadcast.cta_url
 
-        users_map = {
-            u.id: u
-            for u in (
-                await session.execute(select(User).where(User.id.in_(user_ids)))
-            ).scalars().all()
-        }
+        users_map = {u.id: u for u in (await session.execute(select(User).where(User.id.in_(user_ids)))).scalars().all()}
 
     # Шлём вне транзакции — внешние HTTP-запросы не должны её держать.
     sent_ok = 0
@@ -139,6 +131,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
 
 # ----- helpers -----
 
+
 def _format_text(title: str, body: str) -> str:
     return f"<b>{_html(title)}</b>\n\n{_html(body)}"
 
@@ -154,18 +147,12 @@ def _make_keyboard(
         return None
     if cta_type == BroadcastCta.OPEN_PRODUCT and cta_product_id:
         url = f"{base}?startapp=p_{cta_product_id}_b_{broadcast_id}"
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text="🛒 Посмотреть", url=url)]]
-        )
+        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="🛒 Посмотреть", url=url)]])
     if cta_type == BroadcastCta.ORDER_NOW and cta_product_id:
         url = f"{base}?startapp=p_{cta_product_id}_b_{broadcast_id}_order"
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text="🛒 Заказать сейчас", url=url)]]
-        )
+        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="🛒 Заказать сейчас", url=url)]])
     if cta_type == BroadcastCta.EXTERNAL_URL and cta_url:
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text="🔗 Открыть", url=cta_url)]]
-        )
+        return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="🔗 Открыть", url=cta_url)]])
     return None
 
 

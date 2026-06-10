@@ -15,6 +15,7 @@ from models.enums import (
 
 # ----- Groups -----
 
+
 class GroupCreateIn(BaseModel):
     name: str = Field(min_length=2, max_length=128)
     description: str | None = Field(default=None, max_length=2000)
@@ -46,6 +47,7 @@ class GroupMemberOut(BaseModel):
 
 # ----- Contacts -----
 
+
 class ContactImportItem(BaseModel):
     phone: str = Field(min_length=4, max_length=24)
     display_name: str | None = Field(default=None, max_length=128)
@@ -73,6 +75,7 @@ class ContactOut(BaseModel):
 
 
 # ----- Broadcasts -----
+
 
 class BroadcastCreateIn(BaseModel):
     title: str = Field(min_length=2, max_length=200)

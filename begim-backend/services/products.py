@@ -13,6 +13,7 @@
 Архивация / re-publish — идемпотентны на уровне таски (она проверяет наличие
 ChannelPost перед действием).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

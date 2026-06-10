@@ -1,4 +1,5 @@
 """POST /sellers, GET /sellers/{id_or_slug}, PATCH /sellers/me."""
+
 from __future__ import annotations
 
 from litestar import Controller, get, patch, post

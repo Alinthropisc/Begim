@@ -7,6 +7,7 @@ DSN берётся из `app.config.settings.database_url_sync`.
 `target_metadata = Base.metadata` — autogenerate видит все модели, потому что
 их регистрирует `models/__init__.py`.
 """
+
 from logging.config import fileConfig
 
 from alembic import context

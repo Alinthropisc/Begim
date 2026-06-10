@@ -9,6 +9,7 @@ Privacy-first: телефон в открытом виде НЕ храним. Н
 soft-permission приглашение. Только после явного «Да» создаётся
 `SellerGroupMember(opt_in_marketing=true)`.
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -24,9 +25,7 @@ if TYPE_CHECKING:
 
 
 class SellerContact(Base, IdMixin, TimestampMixin):
-    __table_args__ = (
-        UniqueConstraint("seller_id", "phone_hash", name="uq_seller_contacts_seller_id_phone_hash"),
-    )
+    __table_args__ = (UniqueConstraint("seller_id", "phone_hash", name="uq_seller_contacts_seller_id_phone_hash"),)
 
     seller_id: Mapped[int] = mapped_column(ForeignKey("seller_profiles.id", ondelete="CASCADE"), index=True)
     phone_hash: Mapped[str] = mapped_column(String(64), index=True)

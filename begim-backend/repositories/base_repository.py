@@ -215,12 +215,7 @@ class BaseRepository(Generic[ModelType]):
 
         return stmt
 
-    def _apply_ordering(
-        self,
-        stmt: Select,
-        order_by: str | None,
-        desc: bool = True
-    ) -> Select:
+    def _apply_ordering(self, stmt: Select, order_by: str | None, desc: bool = True) -> Select:
         """Применить сортировку"""
         if order_by and hasattr(self.model, order_by):
             column = getattr(self.model, order_by)

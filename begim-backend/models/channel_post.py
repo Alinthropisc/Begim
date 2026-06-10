@@ -5,6 +5,7 @@
 - удалять пост при архивации товара,
 - отслеживать клики/просмотры (channel_views денормализованы из tg getChat).
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -18,9 +19,7 @@ if TYPE_CHECKING:
 
 
 class ChannelPost(Base, IdMixin, TimestampMixin):
-    __table_args__ = (
-        UniqueConstraint("channel_id", "message_id", name="uq_channel_posts_channel_id_message_id"),
-    )
+    __table_args__ = (UniqueConstraint("channel_id", "message_id", name="uq_channel_posts_channel_id_message_id"),)
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id", ondelete="CASCADE"), index=True)
     channel_id: Mapped[int] = mapped_column(BigInteger)
     message_id: Mapped[int] = mapped_column(BigInteger)

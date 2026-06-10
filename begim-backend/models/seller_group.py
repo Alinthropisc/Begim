@@ -6,6 +6,7 @@
 Опт-ин строго обязателен (`opt_in_marketing`). Без него `BroadcastService.dispatch`
 бросает исключение, даже если member физически в группе.
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -38,9 +39,7 @@ class SellerGroup(Base, IdMixin, TimestampMixin, SoftDeleteMixin):
 
 
 class SellerGroupMember(Base, IdMixin, TimestampMixin):
-    __table_args__ = (
-        UniqueConstraint("group_id", "user_id", name="uq_seller_group_members_group_id_user_id"),
-    )
+    __table_args__ = (UniqueConstraint("group_id", "user_id", name="uq_seller_group_members_group_id_user_id"),)
 
     group_id: Mapped[int] = mapped_column(ForeignKey("seller_groups.id", ondelete="CASCADE"), index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)

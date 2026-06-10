@@ -1,4 +1,5 @@
 """Юнит-тесты security-слоя: initData (HMAC), JWT, phone-hash. Без I/O."""
+
 import hashlib
 import hmac
 import json
@@ -35,6 +36,7 @@ def _build_init_data(token: str, *, auth_date: int, user: dict | None = None, ex
 
 
 # ---------- initData ----------
+
 
 class TestInitData:
     def test_valid(self):
@@ -82,6 +84,7 @@ class TestInitData:
 
 # ---------- JWT ----------
 
+
 class TestJwt:
     def test_issue_and_decode_access(self):
         token, payload = issue_token(42, "access")
@@ -123,15 +126,19 @@ class TestJwt:
 
 # ---------- phone ----------
 
+
 class TestPhone:
-    @pytest.mark.parametrize("raw,expected", [
-        ("+998901234567", "+998901234567"),
-        ("998901234567", "+998901234567"),
-        ("901234567", "+998901234567"),
-        ("90 123 45 67", "+998901234567"),
-        ("00998901234567", "+998901234567"),
-        ("+998 (90) 123-45-67", "+998901234567"),
-    ])
+    @pytest.mark.parametrize(
+        "raw,expected",
+        [
+            ("+998901234567", "+998901234567"),
+            ("998901234567", "+998901234567"),
+            ("901234567", "+998901234567"),
+            ("90 123 45 67", "+998901234567"),
+            ("00998901234567", "+998901234567"),
+            ("+998 (90) 123-45-67", "+998901234567"),
+        ],
+    )
     def test_normalize_ok(self, raw, expected):
         assert normalize_e164(raw) == expected
 

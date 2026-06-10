@@ -1,4 +1,5 @@
 """Pydantic DTO для auth-эндпоинтов."""
+
 from __future__ import annotations
 
 from pydantic import BaseModel, Field

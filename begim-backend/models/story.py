@@ -7,6 +7,7 @@
 Просмотр пишется один раз на пару (story_id, viewer_id) — уникальный индекс
 гарантирует идемпотентность; UPSERT в сервисе.
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -45,9 +46,7 @@ class Story(Base, IdMixin, TimestampMixin):
 
 
 class StoryView(Base, IdMixin, TimestampMixin):
-    __table_args__ = (
-        UniqueConstraint("story_id", "viewer_id", name="uq_story_views_story_id_viewer_id"),
-    )
+    __table_args__ = (UniqueConstraint("story_id", "viewer_id", name="uq_story_views_story_id_viewer_id"),)
 
     story_id: Mapped[int] = mapped_column(ForeignKey("storys.id", ondelete="CASCADE"), index=True)
     viewer_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)

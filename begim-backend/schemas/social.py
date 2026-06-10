@@ -9,6 +9,7 @@ from models.enums import DifficultyLevel, NotificationType
 
 # ----- Stories -----
 
+
 class StoryCreateIn(BaseModel):
     media_url: str = Field(min_length=4, max_length=512)
     media_type: str = Field(default="image", pattern=r"^(image|video)$")
@@ -32,6 +33,7 @@ class StoryOut(BaseModel):
 
 
 # ----- Recipes -----
+
 
 class RecipeCreateIn(BaseModel):
     title: str = Field(min_length=2, max_length=200)
@@ -76,6 +78,7 @@ class RecipeListOut(BaseModel):
 
 # ----- Community -----
 
+
 class PostCreateIn(BaseModel):
     body: str = Field(min_length=1, max_length=4000)
     photos: list[str] | None = None
@@ -107,6 +110,7 @@ class PostListOut(BaseModel):
 
 
 # ----- Notifications -----
+
 
 class NotificationOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)

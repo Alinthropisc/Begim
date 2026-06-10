@@ -1,4 +1,5 @@
 """Admin endpoints. Защита: проверяем role=admin в каждом handler'е."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone, UTC
@@ -35,14 +36,8 @@ class AdminController(Controller):
             counts = {}
             counts["users"] = int((await uow.session.execute(select(func.count(User.id)))).scalar_one())
             counts["sellers"] = int((await uow.session.execute(select(func.count(SellerProfile.id)))).scalar_one())
-            counts["products_published"] = int((await uow.session.execute(
-                select(func.count(Product.id)).where(Product.status == ProductStatus.PUBLISHED)
-            )).scalar_one())
-            counts["orders_today"] = int((await uow.session.execute(
-                select(func.count(Order.id)).where(
-                    Order.created_at >= datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
-                )
-            )).scalar_one())
+            counts["products_published"] = int((await uow.session.execute(select(func.count(Product.id)).where(Product.status == ProductStatus.PUBLISHED))).scalar_one())
+            counts["orders_today"] = int((await uow.session.execute(select(func.count(Order.id)).where(Order.created_at >= datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)))).scalar_one())
         return counts
 
     # ----- sellers moderation -----
@@ -64,12 +59,7 @@ class AdminController(Controller):
         if verification is not None:
             cond.append(SellerProfile.verification == verification)
         async with UnitOfWork() as uow:
-            items = (
-                await uow.session.execute(
-                    select(SellerProfile).where(*cond)
-                    .order_by(desc(SellerProfile.id)).offset(offset).limit(min(max(limit, 1), 100))
-                )
-            ).scalars().all()
+            items = (await uow.session.execute(select(SellerProfile).where(*cond).order_by(desc(SellerProfile.id)).offset(offset).limit(min(max(limit, 1), 100)))).scalars().all()
             total = int((await uow.session.execute(select(func.count(SellerProfile.id)).where(*cond))).scalar_one())
             return {
                 "items": [
@@ -84,7 +74,9 @@ class AdminController(Controller):
                     }
                     for s in items
                 ],
-                "total": total, "offset": offset, "limit": limit,
+                "total": total,
+                "offset": offset,
+                "limit": limit,
             }
 
     @post("/sellers/{seller_id:int}/verify")

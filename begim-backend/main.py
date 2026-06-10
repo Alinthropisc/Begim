@@ -10,6 +10,7 @@
 Активация uvloop ДО создания event-loop'а Granian/asyncio даёт ~30% быстрее
 async I/O — критично для arq-воркера и aiogram'а.
 """
+
 from __future__ import annotations
 
 import sys

@@ -5,6 +5,7 @@
 - SQLAlchemy писал в PG `ENUM` (миграции через Alembic).
 - Можно сравнивать с литералом без явного каста.
 """
+
 from enum import Enum
 
 

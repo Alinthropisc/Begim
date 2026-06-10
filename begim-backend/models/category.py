@@ -3,6 +3,7 @@
 Достаточно для маркетплейса в одной нише (домашняя выпечка): «Торты» → «Бенто-торты»,
 «Национальные сладости» → «Чак-чак». Без полноценного nested-set — проще и быстрее.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, UniqueConstraint

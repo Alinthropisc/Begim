@@ -1,4 +1,5 @@
 """Unit tests for ReviewService business rules. No DB — UoW is mocked."""
+
 from __future__ import annotations
 
 from types import SimpleNamespace
@@ -40,6 +41,7 @@ def _make_uow(*, order=None, existing_review=None):
 
 # ── Rating validation ──────────────────────────────────────────
 
+
 class TestRatingValidation:
     @pytest.mark.asyncio
     @pytest.mark.parametrize("bad_rating", [0, -1, 6, 100])
@@ -58,6 +60,7 @@ class TestRatingValidation:
 
 # ── Order guards ───────────────────────────────────────────────
 
+
 class TestOrderGuards:
     @pytest.mark.asyncio
     async def test_order_not_found(self):
@@ -72,14 +75,17 @@ class TestOrderGuards:
             await svc.create(999, CreateReviewInput(order_id=1, rating=5))
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("bad_status", [
-        OrderStatus.NEW,
-        OrderStatus.ACCEPTED,
-        OrderStatus.IN_PROGRESS,
-        OrderStatus.READY,
-        OrderStatus.OUT_FOR_DELIVERY,
-        OrderStatus.CANCELLED,
-    ])
+    @pytest.mark.parametrize(
+        "bad_status",
+        [
+            OrderStatus.NEW,
+            OrderStatus.ACCEPTED,
+            OrderStatus.IN_PROGRESS,
+            OrderStatus.READY,
+            OrderStatus.OUT_FOR_DELIVERY,
+            OrderStatus.CANCELLED,
+        ],
+    )
     async def test_non_delivered_not_reviewable(self, bad_status):
         svc = ReviewService(uow_factory=_make_uow(order=_order(status=bad_status)))
         with pytest.raises(ReviewNotAllowed, match="order must be delivered first"):
@@ -93,6 +99,7 @@ class TestOrderGuards:
 
 
 # ── Happy path ────────────────────────────────────────────────
+
 
 class TestCreateReviewHappyPath:
     @pytest.mark.asyncio

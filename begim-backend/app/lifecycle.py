@@ -7,6 +7,7 @@
 - Сами контроллеры/middleware/роутеры подключаются по списку — добавление
   нового модуля = одна строчка, без правки factory.
 """
+
 from __future__ import annotations
 
 import asyncio

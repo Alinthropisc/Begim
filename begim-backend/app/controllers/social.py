@@ -39,14 +39,29 @@ from services.social import (
 
 # ----- providers -----
 
-def _story_service(): return StoryService()
-def _recipe_service(): return RecipeService()
-def _community_service(): return CommunityService()
-def _follow_service(): return FollowService()
-def _notif_service(): return NotificationService()
+
+def _story_service():
+    return StoryService()
+
+
+def _recipe_service():
+    return RecipeService()
+
+
+def _community_service():
+    return CommunityService()
+
+
+def _follow_service():
+    return FollowService()
+
+
+def _notif_service():
+    return NotificationService()
 
 
 # ----- Stories -----
+
 
 class StoriesController(Controller):
     path = settings.api_prefix + "/stories"
@@ -85,6 +100,7 @@ class StoriesController(Controller):
 
 # ----- Recipes -----
 
+
 class RecipesController(Controller):
     path = settings.api_prefix + "/recipes"
     tags = ["recipes"]
@@ -102,7 +118,9 @@ class RecipesController(Controller):
         items, total = await svc.list(q, city, offset, limit)
         return RecipeListOut(
             items=[RecipeOut.model_validate(r) for r in items],
-            total=total, offset=offset, limit=limit,
+            total=total,
+            offset=offset,
+            limit=limit,
         )
 
     @get("/{recipe_id:int}")
@@ -114,9 +132,7 @@ class RecipesController(Controller):
         return RecipeOut.model_validate(recipe)
 
     @post("/", status_code=201)
-    async def create(
-        self, data: RecipeCreateIn, current_user: User, svc: RecipeService
-    ) -> RecipeOut:
+    async def create(self, data: RecipeCreateIn, current_user: User, svc: RecipeService) -> RecipeOut:
         recipe = await svc.create(current_user.id, RecipeCreateInput(**data.model_dump()))
         return RecipeOut.model_validate(recipe)
 
@@ -139,6 +155,7 @@ class RecipesController(Controller):
 
 # ----- Community -----
 
+
 class CommunityController(Controller):
     path = settings.api_prefix
     tags = ["community"]
@@ -157,7 +174,9 @@ class CommunityController(Controller):
         items, total = await svc.feed(effective_city, offset, limit)
         return PostListOut(
             items=[PostOut.model_validate(p) for p in items],
-            total=total, offset=offset, limit=limit,
+            total=total,
+            offset=offset,
+            limit=limit,
         )
 
     @post("/posts", status_code=201)
@@ -175,6 +194,7 @@ class CommunityController(Controller):
 
 
 # ----- Follow -----
+
 
 class FollowController(Controller):
     path = settings.api_prefix + "/sellers/{seller_id:int}/follow"
@@ -197,6 +217,7 @@ class FollowController(Controller):
 
 # ----- Notifications -----
 
+
 class NotificationsController(Controller):
     path = settings.api_prefix + "/me/notifications"
     tags = ["notifications"]
@@ -211,18 +232,16 @@ class NotificationsController(Controller):
         offset: int = Parameter(query="offset", default=0),
         limit: int = Parameter(query="limit", default=30),
     ) -> NotificationListOut:
-        items, total = await svc.list(
-            current_user.id, offset=offset, limit=limit, only_unread=only_unread
-        )
+        items, total = await svc.list(current_user.id, offset=offset, limit=limit, only_unread=only_unread)
         return NotificationListOut(
             items=[NotificationOut.model_validate(n) for n in items],
-            total=total, offset=offset, limit=limit,
+            total=total,
+            offset=offset,
+            limit=limit,
         )
 
     @post("/{notification_id:int}/read", status_code=204)
-    async def read_one(
-        self, notification_id: int, current_user: User, svc: NotificationService
-    ) -> None:
+    async def read_one(self, notification_id: int, current_user: User, svc: NotificationService) -> None:
         try:
             await svc.mark_read(current_user.id, notification_id)
         except NotFound as e:

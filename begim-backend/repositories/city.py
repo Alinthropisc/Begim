@@ -1,4 +1,5 @@
 """CityRepository — справочник городов."""
+
 from __future__ import annotations
 
 from sqlalchemy import select

@@ -9,6 +9,7 @@ arq разгребает её батчами `LIMIT 25 FOR UPDATE SKIP LOCKED`, 
 Таблица `broadcast_deliveries` растёт быстро — впишем партиционирование по
 `broadcast_id` отдельной миграцией, когда станет >50М строк (MySQL 8 RANGE).
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 

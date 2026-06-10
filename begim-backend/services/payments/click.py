@@ -15,6 +15,7 @@ Webhook от Click — form-encoded POST'ы, два callback'а:
 
 Click работает в **сумах** (без тийинов в URL), поэтому `amount = total_minor // 100`.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -60,13 +61,7 @@ class ClickProvider(PaymentProvider):
         if not (self.merchant_id and self.service_id):
             raise RuntimeError("CLICK_MERCHANT_ID/CLICK_SERVICE_ID не настроены")
         amount_sums = payment.amount_minor // 100  # тийины → сумы
-        url = (
-            "https://my.click.uz/services/pay"
-            f"?service_id={self.service_id}"
-            f"&merchant_id={self.merchant_id}"
-            f"&amount={amount_sums}"
-            f"&transaction_param={order.id}"
-        )
+        url = f"https://my.click.uz/services/pay?service_id={self.service_id}&merchant_id={self.merchant_id}&amount={amount_sums}&transaction_param={order.id}"
         return CheckoutLink(
             url=url,
             extra={"service_id": self.service_id, "merchant_id": self.merchant_id},
@@ -116,11 +111,7 @@ class ClickProvider(PaymentProvider):
             from sqlalchemy import select
 
             external_id = str(p.get("click_trans_id"))
-            existing = (
-                await session.execute(
-                    select(Payment).where(Payment.external_id == external_id)
-                )
-            ).scalar_one_or_none()
+            existing = (await session.execute(select(Payment).where(Payment.external_id == external_id))).scalar_one_or_none()
             if existing is None:
                 existing = Payment(
                     order_id=order.id,
@@ -158,11 +149,7 @@ class ClickProvider(PaymentProvider):
         async with db_session() as session:
             from sqlalchemy import select
 
-            payment = (
-                await session.execute(
-                    select(Payment).where(Payment.external_id == external_id)
-                )
-            ).scalar_one_or_none()
+            payment = (await session.execute(select(Payment).where(Payment.external_id == external_id))).scalar_one_or_none()
             if payment is None:
                 return WebhookOutcome(event="ignored", response_body=_resp(p, ERR_TRANSACTION_NOT_FOUND, "not found"))
 
@@ -195,30 +182,13 @@ class ClickProvider(PaymentProvider):
 
     def _verify_prepare_sign(self, p: dict[str, Any]) -> bool:
         # md5(click_trans_id + service_id + SECRET + merchant_trans_id + amount + action + sign_time)
-        raw = (
-            f"{p.get('click_trans_id','')}"
-            f"{p.get('service_id','')}"
-            f"{self.secret_key}"
-            f"{p.get('merchant_trans_id','')}"
-            f"{p.get('amount','')}"
-            f"{p.get('action','')}"
-            f"{p.get('sign_time','')}"
-        )
+        raw = f"{p.get('click_trans_id', '')}{p.get('service_id', '')}{self.secret_key}{p.get('merchant_trans_id', '')}{p.get('amount', '')}{p.get('action', '')}{p.get('sign_time', '')}"
         expected = hashlib.md5(raw.encode("utf-8")).hexdigest()
         return expected == str(p.get("sign_string", ""))
 
     def _verify_complete_sign(self, p: dict[str, Any]) -> bool:
         # md5(click_trans_id + service_id + SECRET + merchant_trans_id + merchant_prepare_id + amount + action + sign_time)
-        raw = (
-            f"{p.get('click_trans_id','')}"
-            f"{p.get('service_id','')}"
-            f"{self.secret_key}"
-            f"{p.get('merchant_trans_id','')}"
-            f"{p.get('merchant_prepare_id','')}"
-            f"{p.get('amount','')}"
-            f"{p.get('action','')}"
-            f"{p.get('sign_time','')}"
-        )
+        raw = f"{p.get('click_trans_id', '')}{p.get('service_id', '')}{self.secret_key}{p.get('merchant_trans_id', '')}{p.get('merchant_prepare_id', '')}{p.get('amount', '')}{p.get('action', '')}{p.get('sign_time', '')}"
         expected = hashlib.md5(raw.encode("utf-8")).hexdigest()
         return expected == str(p.get("sign_string", ""))
 

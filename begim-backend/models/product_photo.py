@@ -3,6 +3,7 @@
 Храним url и Telegram `file_id` (после первой загрузки в TG — переиспользуем без
 повторного аплоада, это в разы быстрее на больших фото).
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String

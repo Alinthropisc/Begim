@@ -6,6 +6,7 @@
 Поведение конкретного провайдера живёт в Strategy (`services/payments/*`),
 модель остаётся провайдер-агностичной.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import JSON, BigInteger, Enum as SAEnum, ForeignKey, String

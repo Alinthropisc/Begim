@@ -1,4 +1,5 @@
 """GET /me, PATCH /me — текущий пользователь и его настройки."""
+
 from __future__ import annotations
 
 from litestar import Controller, get, patch

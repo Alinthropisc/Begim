@@ -41,12 +41,12 @@ class Settings(BaseSettings):
     )
     database_echo: bool = False
     # Под высокую нагрузку: держим пул всегда прогретым.
-    database_pool_size: int = 20             # постоянных коннектов
-    database_max_overflow: int = 40          # пиковая надстройка над size
-    database_pool_recycle_sec: int = 1800    # переподключаем коннект раз в 30 мин (MySQL wait_timeout)
-    database_pool_timeout_sec: int = 30      # сколько ждать свободного коннекта
-    database_pool_pre_ping: bool = True      # SELECT 1 перед выдачей — защита от «MySQL gone away»
-    database_warmup_on_start: bool = True    # открыть pool_size коннектов при старте
+    database_pool_size: int = 20  # постоянных коннектов
+    database_max_overflow: int = 40  # пиковая надстройка над size
+    database_pool_recycle_sec: int = 1800  # переподключаем коннект раз в 30 мин (MySQL wait_timeout)
+    database_pool_timeout_sec: int = 30  # сколько ждать свободного коннекта
+    database_pool_pre_ping: bool = True  # SELECT 1 перед выдачей — защита от «MySQL gone away»
+    database_warmup_on_start: bool = True  # открыть pool_size коннектов при старте
 
     # ----- Redis -----
     redis_url: str = "redis://localhost:6379/0"
@@ -75,7 +75,7 @@ class Settings(BaseSettings):
 
     # ----- Auth -----
     jwt_algorithm: str = "HS256"
-    jwt_access_ttl_sec: int = 60 * 60 * 24 * 7   # 7 дней
+    jwt_access_ttl_sec: int = 60 * 60 * 24 * 7  # 7 дней
     jwt_refresh_ttl_sec: int = 60 * 60 * 24 * 30  # 30 дней
     # initData считается валидным в течение этого окна (сек).
     telegram_init_data_max_age_sec: int = 60 * 60 * 24

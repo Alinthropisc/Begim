@@ -3,6 +3,7 @@
 Запуск воркера:
     uv run arq worker.main.WorkerSettings
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone, UTC
@@ -26,6 +27,7 @@ from models.user import User
 
 
 # ----- arq lifecycle hooks -----
+
 
 async def on_startup(ctx: dict[str, Any]) -> None:
     """Поднимаем БД и бота под воркера. Бот = отдельный экземпляр от API'шного."""
@@ -51,6 +53,7 @@ async def on_shutdown(ctx: dict[str, Any]) -> None:
 
 # ----- tasks -----
 
+
 async def publish_to_channel(ctx: dict[str, Any], product_id: int) -> dict[str, Any]:
     """Опубликовать товар в глобальный канал @begim.
 
@@ -66,19 +69,11 @@ async def publish_to_channel(ctx: dict[str, Any], product_id: int) -> dict[str, 
         return {"skipped": True, "reason": "no_channel"}
 
     async with db_session() as session:
-        product = (
-            await session.execute(
-                select(Product).where(Product.id == product_id)
-            )
-        ).scalar_one_or_none()
+        product = (await session.execute(select(Product).where(Product.id == product_id))).scalar_one_or_none()
         if product is None or product.status != ProductStatus.PUBLISHED:
             return {"skipped": True, "reason": "product_missing_or_unpublished"}
 
-        existing = (
-            await session.execute(
-                select(ChannelPost).where(ChannelPost.product_id == product_id)
-            )
-        ).scalar_one_or_none()
+        existing = (await session.execute(select(ChannelPost).where(ChannelPost.product_id == product_id))).scalar_one_or_none()
 
         text = _format_product_post(product)
         kb = _product_keyboard(product.id)
@@ -127,9 +122,7 @@ async def order_created(ctx: dict[str, Any], payload: dict[str, Any]) -> dict[st
     order_id = int(payload["order_id"])
 
     async with db_session() as session:
-        order = (
-            await session.execute(select(Order).where(Order.id == order_id))
-        ).scalar_one_or_none()
+        order = (await session.execute(select(Order).where(Order.id == order_id))).scalar_one_or_none()
         if order is None:
             return {"skipped": True}
 
@@ -163,11 +156,7 @@ async def order_created(ctx: dict[str, Any], payload: dict[str, Any]) -> dict[st
                 try:
                     await bot.send_message(
                         chat_id=seller_user.tg_id,
-                        text=(
-                            f"🛒 <b>Новый заказ №{order.id}</b>\n"
-                            f"Сумма: <b>{order.total_minor // 100} UZS</b>\n"
-                            f"Открыть в Mini App: {settings.mini_app_url}?startapp=o_{order.id}"
-                        ),
+                        text=(f"🛒 <b>Новый заказ №{order.id}</b>\nСумма: <b>{order.total_minor // 100} UZS</b>\nОткрыть в Mini App: {settings.mini_app_url}?startapp=o_{order.id}"),
                     )
                 except Exception as e:
                     logger.warning("tg notify seller failed: {}", e)
@@ -185,9 +174,7 @@ async def order_status_changed(ctx: dict[str, Any], payload: dict[str, Any]) -> 
     to_status = payload["to_status"]
 
     async with db_session() as session:
-        order = (
-            await session.execute(select(Order).where(Order.id == order_id))
-        ).scalar_one_or_none()
+        order = (await session.execute(select(Order).where(Order.id == order_id))).scalar_one_or_none()
         if order is None:
             return {"skipped": True}
 
@@ -210,11 +197,7 @@ async def order_status_changed(ctx: dict[str, Any], payload: dict[str, Any]) -> 
                 try:
                     await bot.send_message(
                         chat_id=buyer.tg_id,
-                        text=(
-                            f"📦 <b>{title}</b>\n"
-                            f"{body}\n"
-                            f"Подробнее: {settings.mini_app_url}?startapp=o_{order.id}"
-                        ),
+                        text=(f"📦 <b>{title}</b>\n{body}\nПодробнее: {settings.mini_app_url}?startapp=o_{order.id}"),
                     )
                 except Exception as e:
                     logger.warning("tg notify buyer failed: {}", e)
@@ -227,9 +210,7 @@ async def payment_paid(ctx: dict[str, Any], payload: dict[str, Any]) -> dict[str
     bot: Bot | None = ctx.get("bot")
     order_id = int(payload["order_id"])
     async with db_session() as session:
-        order = (
-            await session.execute(select(Order).where(Order.id == order_id))
-        ).scalar_one_or_none()
+        order = (await session.execute(select(Order).where(Order.id == order_id))).scalar_one_or_none()
         if order is None:
             return {"skipped": True}
         session.add(
@@ -267,11 +248,7 @@ async def unpublish_from_channel(ctx: dict[str, Any], product_id: int) -> dict[s
         return {"skipped": True}
 
     async with db_session() as session:
-        cp = (
-            await session.execute(
-                select(ChannelPost).where(ChannelPost.product_id == product_id)
-            )
-        ).scalar_one_or_none()
+        cp = (await session.execute(select(ChannelPost).where(ChannelPost.product_id == product_id))).scalar_one_or_none()
         if cp is None:
             return {"skipped": True}
         try:
@@ -283,6 +260,7 @@ async def unpublish_from_channel(ctx: dict[str, Any], product_id: int) -> dict[s
 
 
 # ----- formatting -----
+
 
 def _format_product_post(product: Product) -> str:
     price = _fmt_price(product.price_minor, product.currency.value if hasattr(product.currency, "value") else product.currency)

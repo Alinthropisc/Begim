@@ -11,6 +11,7 @@
 Так PaymentService **не знает деталей** конкретного провайдера. Добавить новый =
 новый класс, регистрация в `registry.PROVIDERS`, ничего больше.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -35,11 +36,11 @@ class CheckoutLink:
 
 
 WebhookEventType = Literal[
-    "authorized",   # Payme CreateTransaction / Click Prepare — пользователь ввёл карту
-    "paid",         # Payme PerformTransaction / Click Complete — деньги списаны
-    "cancelled",    # отказ или возврат до paid
-    "refunded",     # возврат после paid
-    "ignored",      # вебхук валидный, но не требует доменного действия
+    "authorized",  # Payme CreateTransaction / Click Prepare — пользователь ввёл карту
+    "paid",  # Payme PerformTransaction / Click Complete — деньги списаны
+    "cancelled",  # отказ или возврат до paid
+    "refunded",  # возврат после paid
+    "ignored",  # вебхук валидный, но не требует доменного действия
 ]
 
 
@@ -64,8 +65,7 @@ class PaymentProvider(ABC):
     name: str  # должен совпадать с enum PaymentProvider.value
 
     @abstractmethod
-    async def create_checkout(self, order: Order, payment: Payment) -> CheckoutLink:
-        ...
+    async def create_checkout(self, order: Order, payment: Payment) -> CheckoutLink: ...
 
     @abstractmethod
     async def verify_webhook(self, headers: dict[str, str], raw_body: bytes) -> bool:

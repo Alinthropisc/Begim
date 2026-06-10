@@ -2,6 +2,7 @@
 
 Поднимается в lifespan (polling) или через webhook. На MVP — polling в фоне.
 """
+
 from __future__ import annotations
 
 from aiogram import Dispatcher

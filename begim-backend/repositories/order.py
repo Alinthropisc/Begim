@@ -1,4 +1,5 @@
 """OrderRepository — заказы + items + status log."""
+
 from __future__ import annotations
 
 from collections.abc import Sequence
@@ -39,14 +40,7 @@ class OrderRepository(BaseRepository[Order]):
         if status is not None:
             cond.append(Order.status == status)
 
-        items_stmt = (
-            select(Order)
-            .where(*cond)
-            .options(selectinload(Order.items))
-            .order_by(desc(Order.id))
-            .offset(offset)
-            .limit(limit)
-        )
+        items_stmt = select(Order).where(*cond).options(selectinload(Order.items)).order_by(desc(Order.id)).offset(offset).limit(limit)
         items = (await self.session.execute(items_stmt)).scalars().unique().all()
         total = int((await self.session.execute(select(func.count(Order.id)).where(*cond))).scalar_one())
         return items, total
@@ -65,14 +59,7 @@ class OrderRepository(BaseRepository[Order]):
         if status is not None:
             cond.append(Order.status == status)
 
-        items_stmt = (
-            select(Order)
-            .where(*cond)
-            .options(selectinload(Order.items))
-            .order_by(desc(Order.id))
-            .offset(offset)
-            .limit(limit)
-        )
+        items_stmt = select(Order).where(*cond).options(selectinload(Order.items)).order_by(desc(Order.id)).offset(offset).limit(limit)
         items = (await self.session.execute(items_stmt)).scalars().unique().all()
         total = int((await self.session.execute(select(func.count(Order.id)).where(*cond))).scalar_one())
         return items, total

@@ -39,12 +39,20 @@ async def _enqueue_arq(name: str, payload: dict) -> None:
     await arq.enqueue_job(name, payload)
 
 
-def _group_svc(): return SellerGroupService()
-def _contacts_svc(): return ContactsService()
-def _broadcast_svc(): return BroadcastService(enqueue=_enqueue_arq)
+def _group_svc():
+    return SellerGroupService()
+
+
+def _contacts_svc():
+    return ContactsService()
+
+
+def _broadcast_svc():
+    return BroadcastService(enqueue=_enqueue_arq)
 
 
 # ----- Groups -----
+
 
 class SellerGroupsController(Controller):
     path = settings.api_prefix + "/seller/groups"
@@ -71,9 +79,7 @@ class GroupJoinController(Controller):
     dependencies = {"svc": Provide(_group_svc, sync_to_thread=False)}
 
     @post("/join/{invite_slug:str}")
-    async def join(
-        self, invite_slug: str, current_user: User, svc: SellerGroupService
-    ) -> dict:
+    async def join(self, invite_slug: str, current_user: User, svc: SellerGroupService) -> dict:
         try:
             member = await svc.join_by_slug(current_user.id, invite_slug)
         except NotFound as e:
@@ -82,6 +88,7 @@ class GroupJoinController(Controller):
 
 
 # ----- Contacts -----
+
 
 class ContactsController(Controller):
     path = settings.api_prefix + "/seller/contacts"
@@ -121,6 +128,7 @@ class ContactsController(Controller):
 
 # ----- Broadcasts -----
 
+
 class BroadcastsController(Controller):
     path = settings.api_prefix + "/seller/broadcasts"
     tags = ["loyalty-broadcasts"]
@@ -132,9 +140,7 @@ class BroadcastsController(Controller):
         return [BroadcastOut.model_validate(b) for b in items]
 
     @post("/", status_code=201)
-    async def create(
-        self, data: BroadcastCreateIn, current_user: User, svc: BroadcastService
-    ) -> BroadcastOut:
+    async def create(self, data: BroadcastCreateIn, current_user: User, svc: BroadcastService) -> BroadcastOut:
         try:
             b = await svc.create_draft(current_user.id, BroadcastCreateInput(**data.model_dump()))
         except Forbidden as e:
@@ -142,9 +148,7 @@ class BroadcastsController(Controller):
         return BroadcastOut.model_validate(b)
 
     @post("/{broadcast_id:int}/send")
-    async def send(
-        self, broadcast_id: int, current_user: User, svc: BroadcastService
-    ) -> BroadcastOut:
+    async def send(self, broadcast_id: int, current_user: User, svc: BroadcastService) -> BroadcastOut:
         try:
             b = await svc.send(current_user.id, broadcast_id)
         except NotFound as e:
@@ -156,9 +160,7 @@ class BroadcastsController(Controller):
         return BroadcastOut.model_validate(b)
 
     @post("/{broadcast_id:int}/cancel")
-    async def cancel(
-        self, broadcast_id: int, current_user: User, svc: BroadcastService
-    ) -> BroadcastOut:
+    async def cancel(self, broadcast_id: int, current_user: User, svc: BroadcastService) -> BroadcastOut:
         try:
             b = await svc.cancel(current_user.id, broadcast_id)
         except NotFound as e:
@@ -176,7 +178,5 @@ class BroadcastTrackController(Controller):
     dependencies = {"svc": Provide(_broadcast_svc, sync_to_thread=False)}
 
     @post("/{broadcast_id:int}/track/click", status_code=204)
-    async def click(
-        self, broadcast_id: int, current_user: User, svc: BroadcastService
-    ) -> None:
+    async def click(self, broadcast_id: int, current_user: User, svc: BroadcastService) -> None:
         await svc.track_click(broadcast_id, current_user.id)

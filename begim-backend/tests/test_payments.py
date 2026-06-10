@@ -1,4 +1,5 @@
 """Юнит-тесты платёжных провайдеров: checkout-URL и подписи. Без БД."""
+
 import base64
 import hashlib
 from types import SimpleNamespace
@@ -18,6 +19,7 @@ def _payment(amount=1_000_00):
 
 
 # ---------- Payme ----------
+
 
 class TestPayme:
     @pytest.mark.asyncio
@@ -74,6 +76,7 @@ class TestPayme:
 
 # ---------- Click ----------
 
+
 class TestClick:
     @pytest.mark.asyncio
     async def test_checkout_url_converts_tiyin_to_sums(self):
@@ -81,7 +84,7 @@ class TestClick:
         link = await c.create_checkout(_order(oid=12), _payment(amount=500_00))  # 50000 тийин
         assert "service_id=S" in link.url
         assert "merchant_id=M" in link.url
-        assert "amount=500" in link.url          # 50000 // 100 = 500 сум
+        assert "amount=500" in link.url  # 50000 // 100 = 500 сум
         assert "transaction_param=12" in link.url
 
     @pytest.mark.asyncio

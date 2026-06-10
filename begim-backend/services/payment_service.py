@@ -8,6 +8,7 @@ Use cases:
   применяет доменное действие к заказу (paid → переход в ACCEPTED), стреляет
   событие arq.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

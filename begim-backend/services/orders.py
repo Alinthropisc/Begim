@@ -16,6 +16,7 @@ State machine:
 - Любой переход пишет append-only `OrderStatusLog` и стреляет событие
   `notify_order_status_changed` (arq).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
 
 
 # ----- Exceptions -----
+
 
 class OrderError(Exception):
     pass
@@ -61,6 +63,7 @@ class OrderIllegalTransition(OrderError):
 
 
 # ----- DTO -----
+
 
 @dataclass(slots=True)
 class OrderItemInput:
@@ -162,11 +165,7 @@ class OrderService:
         async with self._uow_factory() as uow:
             # Подтягиваем все товары одним запросом.
             product_ids = [it.product_id for it in data.items]
-            products = (
-                await uow.session.execute(
-                    select(Product).where(Product.id.in_(product_ids))
-                )
-            ).scalars().all()
+            products = (await uow.session.execute(select(Product).where(Product.id.in_(product_ids)))).scalars().all()
             by_id = {p.id: p for p in products}
 
             # Валидация: все продукты найдены, опубликованы, у одного продавца.
@@ -180,9 +179,7 @@ class OrderService:
                 if product.status != ProductStatus.PUBLISHED:
                     raise OrderInvalidItems(f"product not available: {it.product_id}")
                 if product.min_order_qty and it.qty < product.min_order_qty:
-                    raise OrderInvalidItems(
-                        f"min_order_qty for product {it.product_id} is {product.min_order_qty}"
-                    )
+                    raise OrderInvalidItems(f"min_order_qty for product {it.product_id} is {product.min_order_qty}")
 
                 seller_ids.add(product.seller_id)
                 line_minor = product.price_minor * it.qty
@@ -272,9 +269,7 @@ class OrderService:
         limit: int = 20,
     ):
         async with self._uow_factory() as uow:
-            return await uow.orders.list_for_buyer(
-                buyer_id, status=status, offset=offset, limit=min(max(limit, 1), 50)
-            )
+            return await uow.orders.list_for_buyer(buyer_id, status=status, offset=offset, limit=min(max(limit, 1), 50))
 
     async def list_my_seller(
         self,
@@ -288,9 +283,7 @@ class OrderService:
             seller = await uow.sellers.get_by_user_id(user_id)
             if seller is None:
                 raise OrderForbidden("not a seller")
-            return await uow.orders.list_for_seller(
-                seller.id, status=status, offset=offset, limit=min(max(limit, 1), 50)
-            )
+            return await uow.orders.list_for_seller(seller.id, status=status, offset=offset, limit=min(max(limit, 1), 50))
 
     # ----- transitions -----
 
@@ -311,9 +304,7 @@ class OrderService:
 
             from_status = order.status
             if not _can_transition(actor_role, from_status, to_status):
-                raise OrderIllegalTransition(
-                    f"role={actor_role.value} cannot transition {from_status.value} → {to_status.value}"
-                )
+                raise OrderIllegalTransition(f"role={actor_role.value} cannot transition {from_status.value} → {to_status.value}")
 
             order.status = to_status
             uow.session.add(
@@ -345,9 +336,7 @@ class OrderService:
         order_id: int,
         reason: str | None = None,
     ) -> Order:
-        order = await self.transition(
-            actor_user_id, actor_role, order_id, OrderStatus.CANCELLED, note=reason
-        )
+        order = await self.transition(actor_user_id, actor_role, order_id, OrderStatus.CANCELLED, note=reason)
         if reason:
             async with self._uow_factory() as uow:
                 fresh = await uow.orders.get_with_items(order_id)

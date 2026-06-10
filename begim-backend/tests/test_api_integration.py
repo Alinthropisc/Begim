@@ -3,6 +3,7 @@
 Требуют поднятый MySQL `begim` (миграции + сидер) и Redis. Бот отключается
 (пустой токен), чтобы тесты не ходили в Telegram. Помечены `integration`.
 """
+
 import pytest
 
 pytestmark = pytest.mark.integration

@@ -1,5 +1,6 @@
 """POST /orders, GET /orders/{id}, GET /me/orders, GET /seller/orders,
 POST /orders/{id}/transition, POST /orders/{id}/cancel."""
+
 from __future__ import annotations
 
 from litestar import Controller, get, post
@@ -163,12 +164,12 @@ class MyOrdersController(Controller):
         offset: int = Parameter(query="offset", default=0),
         limit: int = Parameter(query="limit", default=20),
     ) -> OrderListOut:
-        items, total = await order_service.list_my_buyer(
-            current_user.id, status=status, offset=offset, limit=limit
-        )
+        items, total = await order_service.list_my_buyer(current_user.id, status=status, offset=offset, limit=limit)
         return OrderListOut(
             items=[OrderOut.model_validate(o) for o in items],
-            total=total, offset=offset, limit=limit,
+            total=total,
+            offset=offset,
+            limit=limit,
         )
 
 
@@ -189,12 +190,12 @@ class SellerOrdersController(Controller):
         limit: int = Parameter(query="limit", default=20),
     ) -> OrderListOut:
         try:
-            items, total = await order_service.list_my_seller(
-                current_user.id, status=status, offset=offset, limit=limit
-            )
+            items, total = await order_service.list_my_seller(current_user.id, status=status, offset=offset, limit=limit)
         except OrderForbidden as e:
             raise PermissionDeniedException(detail=str(e)) from e
         return OrderListOut(
             items=[OrderOut.model_validate(o) for o in items],
-            total=total, offset=offset, limit=limit,
+            total=total,
+            offset=offset,
+            limit=limit,
         )

@@ -1,4 +1,5 @@
 """CategoryRepository — двухуровневое дерево."""
+
 from __future__ import annotations
 
 from sqlalchemy import select
@@ -14,12 +15,7 @@ class CategoryRepository(BaseRepository[Category]):
     async def list_tree(self) -> list[Category]:
         """Только активные корни. Грузим два уровня детей, чтобы сериализация
         CategoryOut (рекурсивная по `children`) не триггерила async lazy-load."""
-        stmt = (
-            select(Category)
-            .where(Category.parent_id.is_(None), Category.is_active.is_(True))
-            .options(selectinload(Category.children).selectinload(Category.children))
-            .order_by(Category.sort_order, Category.id)
-        )
+        stmt = select(Category).where(Category.parent_id.is_(None), Category.is_active.is_(True)).options(selectinload(Category.children).selectinload(Category.children)).order_by(Category.sort_order, Category.id)
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

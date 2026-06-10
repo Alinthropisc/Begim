@@ -4,6 +4,7 @@
 комьюнити-стороны Begim. Структура поля `ingredients`/`steps` — JSON (список
 объектов), чтобы фронт мог рендерить чек-листами без таблиц-связок.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import JSON, Enum as SAEnum, ForeignKey, Index, String, Text, UniqueConstraint
@@ -55,9 +56,7 @@ class Recipe(Base, IdMixin, TimestampMixin, SoftDeleteMixin):
 
 
 class RecipeLike(Base, IdMixin, TimestampMixin):
-    __table_args__ = (
-        UniqueConstraint("recipe_id", "user_id", name="uq_recipe_likes_recipe_id_user_id"),
-    )
+    __table_args__ = (UniqueConstraint("recipe_id", "user_id", name="uq_recipe_likes_recipe_id_user_id"),)
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id", ondelete="CASCADE"), index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
 
@@ -76,8 +75,7 @@ class RecipeComment(Base, IdMixin, TimestampMixin, SoftDeleteMixin):
 
 class RecipeSave(Base, IdMixin, TimestampMixin):
     """Сохранение рецепта в личную «кулинарную книгу»."""
-    __table_args__ = (
-        UniqueConstraint("recipe_id", "user_id", name="uq_recipe_saves_recipe_id_user_id"),
-    )
+
+    __table_args__ = (UniqueConstraint("recipe_id", "user_id", name="uq_recipe_saves_recipe_id_user_id"),)
     recipe_id: Mapped[int] = mapped_column(ForeignKey("recipes.id", ondelete="CASCADE"), index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)

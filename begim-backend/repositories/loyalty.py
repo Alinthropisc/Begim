@@ -1,4 +1,5 @@
 """Repositories для loyalty: SellerGroup, Member, Contact, Broadcast, Delivery."""
+
 from __future__ import annotations
 
 from sqlalchemy import desc, select
@@ -13,11 +14,7 @@ class SellerGroupRepository(BaseRepository[SellerGroup]):
     model = SellerGroup
 
     async def list_for_seller(self, seller_id: int):
-        stmt = (
-            select(SellerGroup)
-            .where(SellerGroup.seller_id == seller_id, SellerGroup.is_deleted.is_(False))
-            .order_by(desc(SellerGroup.id))
-        )
+        stmt = select(SellerGroup).where(SellerGroup.seller_id == seller_id, SellerGroup.is_deleted.is_(False)).order_by(desc(SellerGroup.id))
         return (await self.session.execute(stmt)).scalars().all()
 
     async def get_by_invite_slug(self, slug: str) -> SellerGroup | None:
@@ -39,12 +36,7 @@ class SellerGroupMemberRepository(BaseRepository[SellerGroupMember]):
         from sqlalchemy import func
 
         cond = [SellerGroupMember.group_id == group_id]
-        items = (
-            await self.session.execute(
-                select(SellerGroupMember).where(*cond)
-                .order_by(desc(SellerGroupMember.id)).offset(offset).limit(limit)
-            )
-        ).scalars().all()
+        items = (await self.session.execute(select(SellerGroupMember).where(*cond).order_by(desc(SellerGroupMember.id)).offset(offset).limit(limit))).scalars().all()
         total = int((await self.session.execute(select(func.count(SellerGroupMember.id)).where(*cond))).scalar_one())
         return items, total
 
@@ -63,12 +55,7 @@ class SellerContactRepository(BaseRepository[SellerContact]):
         from sqlalchemy import func
 
         cond = [SellerContact.seller_id == seller_id]
-        items = (
-            await self.session.execute(
-                select(SellerContact).where(*cond)
-                .order_by(desc(SellerContact.id)).offset(offset).limit(limit)
-            )
-        ).scalars().all()
+        items = (await self.session.execute(select(SellerContact).where(*cond).order_by(desc(SellerContact.id)).offset(offset).limit(limit))).scalars().all()
         total = int((await self.session.execute(select(func.count(SellerContact.id)).where(*cond))).scalar_one())
         return items, total
 
@@ -80,12 +67,7 @@ class BroadcastRepository(BaseRepository[Broadcast]):
         from sqlalchemy import func
 
         cond = [Broadcast.seller_id == seller_id]
-        items = (
-            await self.session.execute(
-                select(Broadcast).where(*cond)
-                .order_by(desc(Broadcast.id)).offset(offset).limit(limit)
-            )
-        ).scalars().all()
+        items = (await self.session.execute(select(Broadcast).where(*cond).order_by(desc(Broadcast.id)).offset(offset).limit(limit))).scalars().all()
         total = int((await self.session.execute(select(func.count(Broadcast.id)).where(*cond))).scalar_one())
         return items, total
 

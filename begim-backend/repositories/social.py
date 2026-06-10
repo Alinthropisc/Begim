@@ -2,6 +2,7 @@
 
 Объединены в один модуль ради краткости — это тонкие CRUD'ы вокруг базовых таблиц.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone, UTC
@@ -33,20 +34,7 @@ class StoryRepository(BaseRepository[Story]):
         ]
         # Простая стратегия: подписки ИЛИ верифицированные в моём городе.
         # Подзапросы по seller_id'ам:
-        stmt = (
-            select(Story)
-            .join(SellerProfile, SellerProfile.id == Story.seller_id)
-            .where(*cond)
-            .where(
-                (Story.seller_id.in_(followed_subq))
-                | (
-                    (SellerProfile.verification == SellerVerification.VERIFIED)
-                    & ((city_id is None) | (SellerProfile.city_id == city_id))
-                )
-            )
-            .order_by(desc(Story.id))
-            .limit(limit)
-        )
+        stmt = select(Story).join(SellerProfile, SellerProfile.id == Story.seller_id).where(*cond).where((Story.seller_id.in_(followed_subq)) | ((SellerProfile.verification == SellerVerification.VERIFIED) & ((city_id is None) | (SellerProfile.city_id == city_id)))).order_by(desc(Story.id)).limit(limit)
         return (await self.session.execute(stmt)).scalars().all()
 
 
@@ -65,10 +53,7 @@ class RecipeRepository(BaseRepository[Recipe]):
         if q:
             from sqlalchemy import text
 
-            base = base.where(
-                text("MATCH(recipes.title, recipes.description) AGAINST (:ftq IN BOOLEAN MODE)")
-                .bindparams(ftq=" ".join(f"+{t}*" for t in q.split() if len(t) >= 2))
-            )
+            base = base.where(text("MATCH(recipes.title, recipes.description) AGAINST (:ftq IN BOOLEAN MODE)").bindparams(ftq=" ".join(f"+{t}*" for t in q.split() if len(t) >= 2)))
         items_stmt = base.order_by(desc(Recipe.id)).offset(offset).limit(limit)
         items = (await self.session.execute(items_stmt)).scalars().all()
         total = int((await self.session.execute(select(func.count(Recipe.id)).where(*cond))).scalar_one())
@@ -82,11 +67,7 @@ class CommunityPostRepository(BaseRepository[CommunityPost]):
         cond = [CommunityPost.is_deleted.is_(False)]
         if city_id is not None:
             cond.append(CommunityPost.city_id == city_id)
-        items = (
-            await self.session.execute(
-                select(CommunityPost).where(*cond).order_by(desc(CommunityPost.id)).offset(offset).limit(limit)
-            )
-        ).scalars().all()
+        items = (await self.session.execute(select(CommunityPost).where(*cond).order_by(desc(CommunityPost.id)).offset(offset).limit(limit))).scalars().all()
         total = int((await self.session.execute(select(func.count(CommunityPost.id)).where(*cond))).scalar_one())
         return items, total
 
@@ -110,10 +91,6 @@ class NotificationRepository(BaseRepository[Notification]):
         cond = [Notification.user_id == user_id]
         if only_unread:
             cond.append(Notification.read_at.is_(None))
-        items = (
-            await self.session.execute(
-                select(Notification).where(*cond).order_by(desc(Notification.id)).offset(offset).limit(limit)
-            )
-        ).scalars().all()
+        items = (await self.session.execute(select(Notification).where(*cond).order_by(desc(Notification.id)).offset(offset).limit(limit))).scalars().all()
         total = int((await self.session.execute(select(func.count(Notification.id)).where(*cond))).scalar_one())
         return items, total

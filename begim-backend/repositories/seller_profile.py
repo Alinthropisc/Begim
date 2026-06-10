@@ -1,4 +1,5 @@
 """SellerProfileRepository."""
+
 from __future__ import annotations
 
 from sqlalchemy import select
@@ -17,11 +18,7 @@ class SellerProfileRepository(BaseRepository[SellerProfile]):
         return result.scalar_one_or_none()
 
     async def get_by_slug(self, slug: str) -> SellerProfile | None:
-        stmt = (
-            select(SellerProfile)
-            .where(SellerProfile.slug == slug)
-            .options(selectinload(SellerProfile.user))
-        )
+        stmt = select(SellerProfile).where(SellerProfile.slug == slug).options(selectinload(SellerProfile.user))
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 

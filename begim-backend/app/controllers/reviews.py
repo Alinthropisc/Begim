@@ -1,4 +1,5 @@
 """POST /orders/{id}/review, POST /reviews/{id}/reply, GET /sellers/{id}/reviews."""
+
 from __future__ import annotations
 
 from litestar import Controller, get, post
@@ -83,5 +84,7 @@ class ReviewsController(Controller):
         items, total = await review_service.list_for_seller(seller_id, offset=offset, limit=limit)
         return ReviewListOut(
             items=[ReviewOut.model_validate(r) for r in items],
-            total=total, offset=offset, limit=limit,
+            total=total,
+            offset=offset,
+            limit=limit,
         )

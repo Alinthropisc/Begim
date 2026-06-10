@@ -3,6 +3,7 @@
 Только один отзыв на заказ (UQ order_id). `rating` ∈ [1..5]. После создания
 сервис денормализует `SellerProfile.rating_avg`/`reviews_count`.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, ForeignKey, SmallInteger, Text, UniqueConstraint

@@ -3,6 +3,7 @@
 Намеренно держим в одном модуле — это тонкие use case'ы без сложной логики.
 Если кто-то разрастётся (например, ленту начнём ранжировать ML-моделью) — вынесем.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -22,6 +23,7 @@ from repositories import UnitOfWork
 
 # ----- Common errors -----
 
+
 class SocialError(Exception):
     pass
 
@@ -39,6 +41,7 @@ class Conflict(SocialError):
 
 
 # ----- Stories -----
+
 
 @dataclass(slots=True)
 class StoryCreateInput:
@@ -102,6 +105,7 @@ class StoryService:
 
 # ----- Recipes -----
 
+
 @dataclass(slots=True)
 class RecipeCreateInput:
     title: str
@@ -141,9 +145,7 @@ class RecipeService:
 
     async def list(self, q: str | None, city_id: int | None, offset: int, limit: int):
         async with self._uow_factory() as uow:
-            return await uow.recipes.list_published(
-                q=q, city_id=city_id, offset=offset, limit=min(max(limit, 1), 50)
-            )
+            return await uow.recipes.list_published(q=q, city_id=city_id, offset=offset, limit=min(max(limit, 1), 50))
 
     async def get(self, recipe_id: int) -> Recipe:
         async with self._uow_factory() as uow:
@@ -159,13 +161,7 @@ class RecipeService:
                 raise NotFound("recipe not found")
             from sqlalchemy import select
 
-            existing = (
-                await uow.session.execute(
-                    select(RecipeLike).where(
-                        RecipeLike.recipe_id == recipe_id, RecipeLike.user_id == user_id
-                    )
-                )
-            ).scalar_one_or_none()
+            existing = (await uow.session.execute(select(RecipeLike).where(RecipeLike.recipe_id == recipe_id, RecipeLike.user_id == user_id))).scalar_one_or_none()
             if existing is None:
                 uow.session.add(RecipeLike(recipe_id=recipe_id, user_id=user_id))
                 recipe.likes_count = (recipe.likes_count or 0) + 1
@@ -181,13 +177,7 @@ class RecipeService:
                 raise NotFound("recipe not found")
             from sqlalchemy import select
 
-            existing = (
-                await uow.session.execute(
-                    select(RecipeSave).where(
-                        RecipeSave.recipe_id == recipe_id, RecipeSave.user_id == user_id
-                    )
-                )
-            ).scalar_one_or_none()
+            existing = (await uow.session.execute(select(RecipeSave).where(RecipeSave.recipe_id == recipe_id, RecipeSave.user_id == user_id))).scalar_one_or_none()
             if existing is None:
                 uow.session.add(RecipeSave(recipe_id=recipe_id, user_id=user_id))
                 recipe.saves_count = (recipe.saves_count or 0) + 1
@@ -198,6 +188,7 @@ class RecipeService:
 
 
 # ----- Community -----
+
 
 @dataclass(slots=True)
 class CommunityPostCreateInput:
@@ -228,9 +219,7 @@ class CommunityService:
 
     async def feed(self, city_id: int | None, offset: int, limit: int):
         async with self._uow_factory() as uow:
-            return await uow.community_posts.feed(
-                city_id=city_id, offset=offset, limit=min(max(limit, 1), 50)
-            )
+            return await uow.community_posts.feed(city_id=city_id, offset=offset, limit=min(max(limit, 1), 50))
 
     async def toggle_like(self, user_id: int, post_id: int) -> bool:
         async with self._uow_factory() as uow:
@@ -239,13 +228,7 @@ class CommunityService:
                 raise NotFound("post not found")
             from sqlalchemy import select
 
-            existing = (
-                await uow.session.execute(
-                    select(PostLike).where(
-                        PostLike.post_id == post_id, PostLike.user_id == user_id
-                    )
-                )
-            ).scalar_one_or_none()
+            existing = (await uow.session.execute(select(PostLike).where(PostLike.post_id == post_id, PostLike.user_id == user_id))).scalar_one_or_none()
             if existing is None:
                 uow.session.add(PostLike(post_id=post_id, user_id=user_id))
                 post.likes_count = (post.likes_count or 0) + 1
@@ -256,6 +239,7 @@ class CommunityService:
 
 
 # ----- Follow -----
+
 
 class FollowService:
     def __init__(self, uow_factory=UnitOfWork) -> None:
@@ -276,13 +260,7 @@ class FollowService:
         async with self._uow_factory() as uow:
             from sqlalchemy import select
 
-            existing = (
-                await uow.session.execute(
-                    select(Follow).where(
-                        Follow.follower_id == follower_id, Follow.seller_id == seller_id
-                    )
-                )
-            ).scalar_one_or_none()
+            existing = (await uow.session.execute(select(Follow).where(Follow.follower_id == follower_id, Follow.seller_id == seller_id))).scalar_one_or_none()
             if existing is None:
                 return False
             await uow.session.delete(existing)
@@ -294,15 +272,14 @@ class FollowService:
 
 # ----- Notifications -----
 
+
 class NotificationService:
     def __init__(self, uow_factory=UnitOfWork) -> None:
         self._uow_factory = uow_factory
 
     async def list(self, user_id: int, *, offset: int, limit: int, only_unread: bool):
         async with self._uow_factory() as uow:
-            return await uow.notifications.list_for_user(
-                user_id, offset=offset, limit=limit, only_unread=only_unread
-            )
+            return await uow.notifications.list_for_user(user_id, offset=offset, limit=limit, only_unread=only_unread)
 
     async def mark_read(self, user_id: int, notification_id: int) -> None:
         async with self._uow_factory() as uow:
@@ -319,10 +296,6 @@ class NotificationService:
             from models.notification import Notification
 
             now = datetime.now(UTC)
-            stmt = (
-                update(Notification)
-                .where(Notification.user_id == user_id, Notification.read_at.is_(None))
-                .values(read_at=now)
-            )
+            stmt = update(Notification).where(Notification.user_id == user_id, Notification.read_at.is_(None)).values(read_at=now)
             result = await uow.session.execute(stmt)
             return result.rowcount or 0

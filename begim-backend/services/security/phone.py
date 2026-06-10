@@ -4,6 +4,7 @@
 SECRET_KEY служит «солью»: одинаковый телефон в разных инсталляциях даёт
 разный хэш, что усложняет offline rainbow-атаки.
 """
+
 from __future__ import annotations
 
 import hashlib

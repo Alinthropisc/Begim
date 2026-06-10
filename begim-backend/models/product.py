@@ -7,6 +7,7 @@
 При публикации (status → PUBLISHED) воркер шлёт пост в глобальный канал; результат
 сохраняем в `ChannelPost` (FK Product.id, message_id) — чтобы потом редактировать/удалять.
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 

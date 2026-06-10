@@ -9,6 +9,7 @@
 Состояние заказа меняется только через сервис `OrderService.transition()`,
 который пишет переход в `OrderStatusLog` (аудит + цепочка событий для бота).
 """
+
 from datetime import datetime
 from typing import TYPE_CHECKING
 
@@ -99,6 +100,7 @@ class OrderItem(Base, IdMixin, TimestampMixin):
 
 class OrderStatusLog(Base, IdMixin, TimestampMixin):
     """История переходов статусов. Append-only. Источник событий для бота."""
+
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id", ondelete="CASCADE"), index=True)
     from_status: Mapped[OrderStatus | None] = mapped_column(
         SAEnum(OrderStatus, name="order_status", native_enum=False, length=20),

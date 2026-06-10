@@ -21,6 +21,7 @@ JSON-RPC методы (минимально достаточный набор д
 - -31007 cannot perform (state mismatch)
 - -31008 cannot cancel
 """
+
 from __future__ import annotations
 
 import base64
@@ -148,11 +149,7 @@ class PaymeProvider(PaymentProvider):
             # Если для этой Paycom-транзакции уже есть Payment — отдаём её, идемпотентность.
             from sqlalchemy import select
 
-            existing = (
-                await session.execute(
-                    select(Payment).where(Payment.external_id == external_id)
-                )
-            ).scalar_one_or_none()
+            existing = (await session.execute(select(Payment).where(Payment.external_id == external_id))).scalar_one_or_none()
 
             if existing is None:
                 existing = Payment(
@@ -169,11 +166,14 @@ class PaymeProvider(PaymentProvider):
             return WebhookOutcome(
                 event="authorized",
                 payment_external_id=external_id,
-                response_body=_jsonrpc_ok(rpc_id, {
-                    "transaction": str(existing.id),
-                    "state": 1,
-                    "create_time": create_time,
-                }),
+                response_body=_jsonrpc_ok(
+                    rpc_id,
+                    {
+                        "transaction": str(existing.id),
+                        "state": 1,
+                        "create_time": create_time,
+                    },
+                ),
                 raw=params,
             )
 
@@ -182,11 +182,7 @@ class PaymeProvider(PaymentProvider):
         from sqlalchemy import select
 
         async with db_session() as session:
-            payment = (
-                await session.execute(
-                    select(Payment).where(Payment.external_id == external_id)
-                )
-            ).scalar_one_or_none()
+            payment = (await session.execute(select(Payment).where(Payment.external_id == external_id))).scalar_one_or_none()
             if payment is None:
                 return _err(rpc_id, -31003, "transaction not found", "ru")
             if payment.status == PaymentStatus.PAID:
@@ -194,11 +190,14 @@ class PaymeProvider(PaymentProvider):
                 return WebhookOutcome(
                     event="ignored",
                     payment_external_id=external_id,
-                    response_body=_jsonrpc_ok(rpc_id, {
-                        "transaction": str(payment.id),
-                        "state": 2,
-                        "perform_time": _now_ms(),
-                    }),
+                    response_body=_jsonrpc_ok(
+                        rpc_id,
+                        {
+                            "transaction": str(payment.id),
+                            "state": 2,
+                            "perform_time": _now_ms(),
+                        },
+                    ),
                 )
             if payment.status != PaymentStatus.AUTHORIZED:
                 return _err(rpc_id, -31008, "cannot perform from state", "ru")
@@ -207,11 +206,14 @@ class PaymeProvider(PaymentProvider):
             return WebhookOutcome(
                 event="paid",
                 payment_external_id=external_id,
-                response_body=_jsonrpc_ok(rpc_id, {
-                    "transaction": str(payment.id),
-                    "state": 2,
-                    "perform_time": _now_ms(),
-                }),
+                response_body=_jsonrpc_ok(
+                    rpc_id,
+                    {
+                        "transaction": str(payment.id),
+                        "state": 2,
+                        "perform_time": _now_ms(),
+                    },
+                ),
                 raw=params,
             )
 
@@ -220,11 +222,7 @@ class PaymeProvider(PaymentProvider):
         from sqlalchemy import select
 
         async with db_session() as session:
-            payment = (
-                await session.execute(
-                    select(Payment).where(Payment.external_id == external_id)
-                )
-            ).scalar_one_or_none()
+            payment = (await session.execute(select(Payment).where(Payment.external_id == external_id))).scalar_one_or_none()
             if payment is None:
                 return _err(rpc_id, -31003, "transaction not found", "ru")
             event = "refunded" if payment.status == PaymentStatus.PAID else "cancelled"
@@ -233,11 +231,14 @@ class PaymeProvider(PaymentProvider):
             return WebhookOutcome(
                 event=event,
                 payment_external_id=external_id,
-                response_body=_jsonrpc_ok(rpc_id, {
-                    "transaction": str(payment.id),
-                    "state": -2 if event == "refunded" else -1,
-                    "cancel_time": _now_ms(),
-                }),
+                response_body=_jsonrpc_ok(
+                    rpc_id,
+                    {
+                        "transaction": str(payment.id),
+                        "state": -2 if event == "refunded" else -1,
+                        "cancel_time": _now_ms(),
+                    },
+                ),
                 raw=params,
             )
 
@@ -246,11 +247,7 @@ class PaymeProvider(PaymentProvider):
         from sqlalchemy import select
 
         async with db_session() as session:
-            payment = (
-                await session.execute(
-                    select(Payment).where(Payment.external_id == external_id)
-                )
-            ).scalar_one_or_none()
+            payment = (await session.execute(select(Payment).where(Payment.external_id == external_id))).scalar_one_or_none()
             if payment is None:
                 return _err(rpc_id, -31003, "transaction not found", "ru")
             state_map = {
@@ -261,13 +258,16 @@ class PaymeProvider(PaymentProvider):
             }
             return WebhookOutcome(
                 event="ignored",
-                response_body=_jsonrpc_ok(rpc_id, {
-                    "transaction": str(payment.id),
-                    "state": state_map.get(payment.status, 0),
-                    "create_time": _now_ms(),
-                    "perform_time": _now_ms() if payment.status == PaymentStatus.PAID else 0,
-                    "cancel_time": 0,
-                }),
+                response_body=_jsonrpc_ok(
+                    rpc_id,
+                    {
+                        "transaction": str(payment.id),
+                        "state": state_map.get(payment.status, 0),
+                        "create_time": _now_ms(),
+                        "perform_time": _now_ms() if payment.status == PaymentStatus.PAID else 0,
+                        "cancel_time": 0,
+                    },
+                ),
             )
 
 

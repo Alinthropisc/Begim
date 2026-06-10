@@ -8,6 +8,7 @@
 - Мягкое удаление — через `SoftDeleteMixin` только там, где нужна аудитория/история;
   модели событий не удаляются никогда.
 """
+
 from datetime import datetime
 from typing import Any
 

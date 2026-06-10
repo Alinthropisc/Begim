@@ -3,6 +3,7 @@
 Импорт здесь нужен, чтобы Alembic autogenerate видел метаданные всех таблиц
 (через `Base.metadata`). Если модель не импортирована — миграция её «не видит».
 """
+
 from models.base import Base, IdMixin, SoftDeleteMixin, TimestampMixin
 from models.broadcast import Broadcast, BroadcastDelivery
 from models.category import Category

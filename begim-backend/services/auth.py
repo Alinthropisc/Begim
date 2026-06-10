@@ -12,6 +12,7 @@
 Зачем jti в Redis: без него refresh-токены нельзя инвалидировать (бан, logout,
 смена устройства). Redis-ключ `auth:refresh:<jti>` = `user_id`, TTL = refresh_ttl.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass

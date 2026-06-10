@@ -5,6 +5,7 @@
 профиль продавца, продукт, заказ) знают свой `city_id` → фильтрация ленты по
 городу = простой WHERE без джойнов.
 """
+
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Numeric, String, UniqueConstraint

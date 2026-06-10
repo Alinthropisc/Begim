@@ -3,6 +3,7 @@
 Запуск:
     uv run arq worker.main.WorkerSettings
 """
+
 from __future__ import annotations
 
 from arq.connections import RedisSettings

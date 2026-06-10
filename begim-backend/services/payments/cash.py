@@ -8,6 +8,7 @@
 вручную через `OrderService.transition(... DELIVERED)`: в этом переходе
 PaymentService потом будет переключать платёж в PAID отдельной таской.
 """
+
 from __future__ import annotations
 
 from typing import Any
