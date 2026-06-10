@@ -1,0 +1,41 @@
+# IDE / editor
+.idea/
+.vscode/
+
+# Claude Code
+.claude/
+
+# Archived prototype
+begim-bakery-marketplace-prototype/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Vite
+node_modules/
+.env.local
+.env.*.local
+
+# Env files (keep .env.example)
+.env
+.env.testing
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Uploads / storage
+storage/uploads/

@@ -1,0 +1,39 @@
+{
+  "name": "begim-telegram-mini-app",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Begim — Telegram Mini App for homemade sweets marketplace",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "@telegram-apps/sdk-react": "^1.1.0",
+    "@telegram-apps/telegram-ui": "^2.1.0",
+    "axios": "^1.6.7",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.17.0",
+    "qrcode.react": "^4.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.0",
+    "tailwind-merge": "^3.6.0",
+    "zustand": "^4.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4"
+  }
+}

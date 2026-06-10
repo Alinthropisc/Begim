@@ -1,0 +1,59 @@
+/* ============================================================
+   BEGIM — Custom Styles & Animations
+   ============================================================ */
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+}
+
+/* === Скроллбар === */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* === Layout Fixes === */
+body {
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Inter', sans-serif;
+}
+
+.page {
+    transition: opacity 0.3s ease;
+}
+
+.page.active {
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Glassmorphism utility if needed */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Custom patterns can be added here as classes */
+.pattern-girih {
+    background-image: url('data:image/svg+xml,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><path d="M20 0l20 20-20 20L0 20z" fill="%23C8963E" fill-opacity="0.05" fill-rule="evenodd"/></svg>');
+}

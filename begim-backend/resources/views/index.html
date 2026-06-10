@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0,
+                   maximum-scale=1.0, user-scalable=no,
+                   viewport-fit=cover">
+    <meta name="theme-color" content="#C8963E">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Begim</title>
+
+    <!-- Telegram MiniApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#C8963E',
+                        'primary-dark': '#A67A2E',
+                        'primary-light': '#E8B86D',
+                        secondary: '#2D5016',
+                        accent: '#F4E4C1',
+                        surface: '#FDFCF0', // Cream/Ivory
+                        rose: '#E8A598',
+                        dark: '#1A1A2E',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="static/css/app.css">
+</head>
+<body class="bg-[#F3F4F6] flex justify-center min-h-screen">
+
+<div id="app" class="w-full max-w-[430px] bg-surface min-h-screen relative overflow-x-hidden shadow-2xl">
+
+    <!-- ================================================
+         SPLASH
+         ================================================ -->
+    <div id="page-splash" class="page active">
+        <div class="splash-screen flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-accent via-surface to-white p-8">
+            <div class="splash-logo-ring relative w-32 h-32 mb-8">
+                <div class="splash-logo-inner w-full h-full rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-5xl shadow-xl z-10 relative">🥐</div>
+                <div class="splash-ring-1 absolute inset-[-10px] rounded-full border-2 border-primary/20 animate-[ping_3s_linear_infinite]"></div>
+                <div class="splash-ring-2 absolute inset-[-20px] rounded-full border border-primary/10 animate-[ping_4s_linear_infinite_1s]"></div>
+            </div>
+            <h1 class="font-serif text-5xl font-bold text-dark mb-1">Begim</h1>
+            <p class="text-primary text-xl font-medium mb-2 tracking-widest">بیگیم</p>
+            <p class="text-dark/50 text-sm text-center leading-relaxed mb-12">
+                O'zbekistonning eng yaxshi<br>uy pishiriqlari bozori
+            </p>
+            <div class="flex gap-2">
+                <div class="w-2 h-2 rounded-full bg-primary animate-bounce"></div>
+                <div class="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:0.2s]"></div>
+                <div class="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:0.4s]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================
+         ONBOARDING
+         ================================================ -->
+    <div id="page-onboarding" class="page">
+        <div class="min-h-screen flex flex-col">
+            <!-- Слайды -->
+            <div class="flex-1 relative overflow-hidden" id="ob-slides-wrap">
+                <div class="ob-slide absolute inset-0 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-accent/30 to-surface transition-opacity duration-500" id="ob-slide-0">
+                    <div class="text-8xl mb-8 animate-bounce">🎂</div>
+                    <h2 class="font-serif text-3xl font-bold text-center mb-4 text-dark leading-tight">
+                        Mahalliy ustalar<br>pishiriqlari
+                    </h2>
+                    <p class="text-dark/50 text-center leading-relaxed text-sm">
+                        Shahringizning eng iste'dodli ayollari tayyorlagan taomlar
+                    </p>
+                </div>
+                <div class="ob-slide absolute inset-0 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-rose/10 to-surface hidden transition-opacity duration-500" id="ob-slide-1">
+                    <div class="text-8xl mb-8 animate-pulse">✨</div>
+                    <h2 class="font-serif text-3xl font-bold text-center mb-4 text-dark leading-tight">
+                        100% Halol<br>mahsulotlar
+                    </h2>
+                    <p class="text-dark/50 text-center leading-relaxed text-sm">
+                        Barcha mahsulotlar sertifikatlangan va halol
+                    </p>
+                </div>
+                <div class="ob-slide absolute inset-0 flex flex-col items-center justify-center p-8 bg-gradient-to-b from-secondary/5 to-surface hidden transition-opacity duration-500" id="ob-slide-2">
+                    <div class="text-8xl mb-8 animate-spin-slow">🚀</div>
+                    <h2 class="font-serif text-3xl font-bold text-center mb-4 text-dark leading-tight">
+                        Tez yetkazib<br>berish
+                    </h2>
+                    <p class="text-dark/50 text-center leading-relaxed text-sm">
+                        Shahringiz bo'ylab 1-2 soat ichida yetkazib beramiz
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dots + Кнопки -->
+            <div class="p-8 bg-surface">
+                <div class="flex justify-center gap-2 mb-8" id="ob-dots">
+                    <div class="w-2 h-2 rounded-full bg-primary transition-all duration-300 active" data-i="0"></div>
+                    <div class="w-2 h-2 rounded-full bg-dark/10 transition-all duration-300" data-i="1"></div>
+                    <div class="w-2 h-2 rounded-full bg-dark/10 transition-all duration-300" data-i="2"></div>
+                </div>
+                <button class="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-transform" id="ob-next-btn">
+                    Davom etish →
+                </button>
+                <button id="ob-skip-btn" class="w-full text-center text-dark/40 text-sm py-4 mt-2">
+                    O'tkazib yuborish
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================
+         ГЛАВНАЯ
+         ================================================ -->
+    <div id="page-home" class="page">
+        <div class="pb-24">
+            <!-- Header -->
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <p class="text-dark/50 text-xs mb-1">Assalomu alaykum 👋</p>
+                        <h1 class="font-serif text-2xl font-bold text-dark">Nilufar</h1>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-dark/5 relative active:scale-90 transition-transform" onclick="navigateTo('profile')">
+                            <i data-lucide="bell" class="w-5 h-5 text-dark"></i>
+                            <span class="absolute top-2 right-2 w-2 h-2 bg-rose rounded-full"></span>
+                        </button>
+                        <button class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-dark/5 relative active:scale-90 transition-transform" onclick="navigateTo('cart')">
+                            <i data-lucide="shopping-bag" class="w-5 h-5 text-dark"></i>
+                            <span id="header-cart-badge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-primary rounded-full text-white text-[10px] font-bold hidden items-center justify-center px-1">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="relative group">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark/30 group-focus-within:text-primary transition-colors"></i>
+                    <input class="w-full bg-white border border-dark/5 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-primary/30 focus:ring-4 focus:ring-primary/5 transition-all shadow-sm" 
+                           type="text" 
+                           placeholder="Tortlar, somsa, non..."
+                           oninput="handleSearch(this.value)" id="search-input">
+                </div>
+            </div>
+
+            <!-- Banner -->
+            <div class="px-6 mb-8">
+                <div class="relative overflow-hidden bg-primary rounded-[2.5rem] p-6 text-white shadow-xl shadow-primary/20">
+                    <!-- Pattern Overlay -->
+                    <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: url('data:image/svg+xml,<svg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20 0l20 20-20 20L0 20z\" fill=\"%23ffffff\" fill-rule=\"evenodd\"/></svg>'); background-size: 20px 20px;"></div>
+                    
+                    <div class="relative z-10">
+                        <p class="text-white/70 text-[10px] uppercase tracking-widest mb-1">Maxsus taklif 🌟</p>
+                        <h3 class="font-serif text-xl font-bold mb-4 leading-tight">
+                            Birinchi buyurtma uchun<br><span class="text-3xl">-15%</span> chegirma
+                        </h3>
+                        <button class="bg-white text-primary text-xs font-bold py-2.5 px-6 rounded-xl shadow-lg active:scale-95 transition-transform">
+                            Sotib olish
+                        </button>
+                    </div>
+                    <div class="absolute -right-4 -bottom-4 text-8xl opacity-20 pointer-events-none rotate-12">🎂</div>
+                </div>
+            </div>
+
+            <!-- Категории -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between px-6 mb-4">
+                    <h2 class="font-serif text-lg font-bold text-dark">Kategoriyalar</h2>
+                </div>
+                <div class="flex gap-4 px-6 overflow-x-auto scrollbar-hide pb-2" id="cats-home">
+                    <!-- JS populated -->
+                </div>
+            </div>
+
+            <!-- Mashhur -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between px-6 mb-4">
+                    <h2 class="font-serif text-lg font-bold text-dark">Mashhur taomlar</h2>
+                    <button class="text-primary text-sm font-bold active:opacity-60" onclick="navigateTo('catalog')">Barchasi →</button>
+                </div>
+                <div class="grid grid-cols-2 gap-4 px-6" id="popular-grid">
+                    <!-- JS populated -->
+                </div>
+            </div>
+
+            <!-- Top Sellers -->
+            <div>
+                <div class="flex items-center justify-between px-6 mb-4">
+                    <h2 class="font-serif text-lg font-bold text-dark">Top sotuvchilar</h2>
+                </div>
+                <div class="flex gap-4 px-6 overflow-x-auto scrollbar-hide pb-4" id="sellers-list">
+                    <!-- JS populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================
+         КАТАЛОГ
+         ================================================ -->
+    <div id="page-catalog" class="page">
+        <div class="pb-24">
+            <div class="p-6 sticky top-0 bg-surface/80 backdrop-blur-xl z-20">
+                <div class="flex items-center gap-4 mb-6">
+                    <button class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-dark/5 active:scale-90 transition-transform" onclick="goBack()">
+                        <i data-lucide="chevron-left" class="w-5 h-5 text-dark"></i>
+                    </button>
+                    <h1 class="font-serif text-xl font-bold text-dark">Katalog</h1>
+                </div>
+                <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-2" id="catalog-filters">
+                    <!-- JS populated -->
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 px-6" id="catalog-grid">
+                <!-- JS populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================
+         ТОВАР
+         ================================================ -->
+    <div id="page-product" class="page">
+        <div class="pb-32">
+            <!-- Hero -->
+            <div id="product-hero" class="h-80 relative flex items-center justify-center text-9xl bg-gradient-to-br from-accent to-surface overflow-hidden">
+                <!-- Background Pattern -->
+                <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('data:image/svg+xml,<svg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M30 0l30 30-30 30L0 30z\" fill=\"%231A5F7A\" fill-rule=\"evenodd\"/></svg>');"></div>
+                
+                <button class="absolute top-6 left-6 w-10 h-10 bg-white/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg z-10 active:scale-90" onclick="goBack()">
+                    <i data-lucide="chevron-left" class="w-5 h-5 text-dark"></i>
+                </button>
+                <button id="fav-btn" class="absolute top-6 right-6 w-10 h-10 bg-white/90 backdrop-blur-md rounded-xl flex items-center justify-center shadow-lg z-10 active:scale-90 transition-all" onclick="toggleFavorite()">
+                    <i data-lucide="heart" id="fav-icon" class="w-5 h-5 text-dark/30"></i>
+                </button>
+                <span id="product-emoji-big" class="drop-shadow-2xl animate-float"></span>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 -mt-8 relative z-10 bg-surface rounded-t-[3rem] shadow-[0_-20px_40px_rgba(0,0,0,0.05)]">
+                <div class="flex gap-2 mb-4" id="product-badges"></div>
+                <h1 id="product-title" class="font-serif text-3xl font-bold text-dark mb-2 leading-tight"></h1>
+                
+                <div class="flex items-center gap-3 mb-6">
+                    <div id="product-stars" class="flex text-yellow-400"></div>
+                    <span id="product-rating-info" class="text-dark/40 text-xs font-medium"></span>
+                </div>
+
+                <p id="product-desc" class="text-dark/50 text-sm leading-relaxed mb-8"></p>
+
+                <!-- Qty -->
+                <div class="flex items-center justify-between bg-white p-4 rounded-3xl border border-dark/5 shadow-sm mb-6">
+                    <span class="text-sm font-bold text-dark/50">Miqdor</span>
+                    <div class="flex items-center gap-4">
+                        <button class="w-10 h-10 rounded-xl bg-accent text-primary flex items-center justify-center text-xl font-bold active:scale-90 transition-transform" onclick="changeQty(-1)">−</button>
+                        <span id="qty-val" class="font-bold text-lg min-w-[20px] text-center text-dark">1</span>
+                        <button class="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center text-xl font-bold active:scale-90 transition-transform" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+
+                <!-- Seller -->
+                <div class="bg-white p-5 rounded-[2rem] border border-dark/5 shadow-sm mb-8">
+                    <p class="text-[10px] text-dark/30 uppercase tracking-widest font-bold mb-4">Sotuvchi haqida</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div id="seller-avatar" class="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-2xl shadow-inner"></div>
+                            <div>
+                                <p id="seller-name" class="font-bold text-dark text-sm"></p>
+                                <p id="seller-district" class="text-dark/40 text-[10px]"></p>
+                            </div>
+                        </div>
+                        <button class="bg-primary/10 text-primary text-xs font-bold py-2 px-4 rounded-xl active:scale-95">Bog'lanish</button>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <h3 class="font-serif text-lg font-bold text-dark mb-4">Mijozlar fikri</h3>
+                <div id="product-reviews" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/80 backdrop-blur-2xl border-t border-dark/5 p-6 pb-8 z-30">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-dark/40 text-sm font-medium">Jami narx</span>
+                <span id="product-total" class="font-serif text-2xl font-bold text-primary"></span>
+            </div>
+            <button class="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 transition-transform" onclick="addToCart()">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                Savatga qo'shish
+            </button>
+        </div>
+    </div>
+
+    <!-- ================================================
+         КОРЗИНА
+         ================================================ -->
+    <div id="page-cart" class="page">
+        <div class="pb-40">
+            <div class="p-6 flex items-center gap-4 sticky top-0 bg-surface/80 backdrop-blur-xl z-20">
+                <button class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-dark/5 active:scale-90" onclick="goBack()">
+                    <i data-lucide="chevron-left" class="w-5 h-5 text-dark"></i>
+                </button>
+                <h1 class="font-serif text-xl font-bold text-dark">Savat</h1>
+            </div>
+
+            <!-- Empty -->
+            <div id="cart-empty" class="hidden flex-col items-center justify-center p-12 text-center">
+                <div class="text-7xl mb-6">🛒</div>
+                <h2 class="font-serif text-2xl font-bold text-dark mb-2">Savat bo'sh</h2>
+                <p class="text-dark/40 text-sm mb-8">Hali hech narsa qo'shmadingiz</p>
+                <button class="bg-primary text-white font-bold py-4 px-12 rounded-2xl shadow-lg active:scale-95 transition-transform" onclick="navigateTo('home')">
+                    Xarid qilish
+                </button>
+            </div>
+
+            <div id="cart-items" class="p-6 space-y-4"></div>
+
+            <!-- Summary -->
+            <div id="cart-summary" class="px-6 hidden">
+                <div class="bg-white p-6 rounded-[2.5rem] border border-dark/5 shadow-sm space-y-4">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-dark/40 font-medium">Mahsulotlar</span>
+                        <span id="subtotal-val" class="text-dark font-bold"></span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-dark/40 font-medium">Yetkazib berish</span>
+                        <span class="text-secondary font-bold">Bepul 🎉</span>
+                    </div>
+                    <div class="h-px bg-dark/5"></div>
+                    <div class="flex justify-between">
+                        <span class="font-bold text-dark">Jami</span>
+                        <span id="total-val" class="font-serif text-xl font-bold text-primary"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/80 backdrop-blur-2xl border-t border-dark/5 p-6 pb-8 z-30" id="cart-checkout-bar" style="display:none">
+            <button class="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-transform" onclick="showToast('🎉 Buyurtma berildi! Tez orada siz bilan bog\'lanamiz')">
+                Buyurtma berish →
+            </button>
+        </div>
+    </div>
+
+    <!-- ================================================
+         ПРОФИЛЬ
+         ================================================ -->
+    <div id="page-profile" class="page">
+        <div class="pb-24">
+            <!-- Hero -->
+            <div class="bg-gradient-to-br from-accent/40 via-accent/20 to-surface p-12 flex flex-col items-center">
+                <div class="w-24 h-24 rounded-3xl bg-white flex items-center justify-center text-4xl shadow-xl shadow-accent/50 mb-6 border-4 border-white">👩</div>
+                <h2 class="font-serif text-xl font-bold text-dark mb-1">Nilufar Rashidova</h2>
+                <p class="text-dark/40 text-sm font-medium">+998 90 123 45 67</p>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="bg-white rounded-[2.5rem] border border-dark/5 shadow-sm overflow-hidden">
+                    <button class="w-full p-5 flex items-center gap-4 active:bg-dark/5 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-accent/30 flex items-center justify-center text-xl">📦</div>
+                        <span class="flex-1 text-left font-bold text-dark text-sm">Buyurtmalarim</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-dark/20"></i>
+                    </button>
+                    <div class="h-px bg-dark/5 mx-5"></div>
+                    <button class="w-full p-5 flex items-center gap-4 active:bg-dark/5 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-accent/30 flex items-center justify-center text-xl">❤️</div>
+                        <span class="flex-1 text-left font-bold text-dark text-sm">Sevimlilar</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-dark/20"></i>
+                    </button>
+                    <div class="h-px bg-dark/5 mx-5"></div>
+                    <button class="w-full p-5 flex items-center gap-4 active:bg-dark/5 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-accent/30 flex items-center justify-center text-xl">📍</div>
+                        <span class="flex-1 text-left font-bold text-dark text-sm">Manzillarim</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-dark/20"></i>
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] border border-dark/5 shadow-sm overflow-hidden">
+                    <button class="w-full p-5 flex items-center gap-4 active:bg-dark/5 transition-colors group">
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-xl group-active:scale-110 transition-transform">🏪</div>
+                        <span class="flex-1 text-left font-bold text-primary text-sm">Sotuvchi bo'lish</span>
+                        <span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-lg">Yangi</span>
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] border border-dark/5 shadow-sm overflow-hidden">
+                    <button class="w-full p-5 flex items-center gap-4 active:bg-dark/5 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-dark/5 flex items-center justify-center text-xl">⚙️</div>
+                        <span class="flex-1 text-left font-bold text-dark text-sm">Sozlamalar</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-dark/20"></i>
+                    </button>
+                    <div class="h-px bg-dark/5 mx-5"></div>
+                    <button class="w-full p-5 flex items-center gap-4 active:bg-dark/5 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-dark/5 flex items-center justify-center text-xl">❓</div>
+                        <span class="flex-1 text-left font-bold text-dark text-sm">Yordam markazi</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-dark/20"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================
+         BOTTOM NAV
+         ================================================ -->
+    <nav id="bottom-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/80 backdrop-blur-2xl border-t border-dark/5 px-4 pt-3 pb-8 z-50">
+        <div class="flex items-center justify-between">
+            <button class="nav-item flex-1 flex flex-col items-center gap-1 active:scale-90 transition-all text-primary" data-page="home" onclick="navigateTo('home')">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Asosiy</span>
+            </button>
+            <button class="nav-item flex-1 flex flex-col items-center gap-1 active:scale-90 transition-all text-dark/30" data-page="catalog" onclick="navigateTo('catalog')">
+                <i data-lucide="layout-grid" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Katalog</span>
+            </button>
+            <button class="nav-item flex-1 flex flex-col items-center gap-1 active:scale-90 transition-all text-dark/30 relative" data-page="cart" onclick="navigateTo('cart')">
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                <span id="nav-badge" class="absolute top-0 right-1/4 min-w-[16px] h-[16px] bg-primary rounded-full text-white text-[9px] font-bold hidden items-center justify-center px-1">0</span>
+                <span class="text-[10px] font-bold">Savat</span>
+            </button>
+            <button class="nav-item flex-1 flex flex-col items-center gap-1 active:scale-90 transition-all text-dark/30" data-page="profile" onclick="navigateTo('profile')">
+                <i data-lucide="user" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">Profil</span>
+            </button>
+        </div>
+    </nav>
+
+</div><!-- /app -->
+
+<!-- Toast -->
+<div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] bg-dark text-white text-xs font-bold py-3 px-6 rounded-2xl shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform -translate-y-4"></div>
+
+<script src="static/js/data.js"></script>
+<script src="static/js/app.js"></script>
+<script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+</script>
+</body>
+</html>

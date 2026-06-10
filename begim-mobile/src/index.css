@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bordeaux: #8b2635;
+  --color-bordeaux-dark: #6b1a27;
+  --color-bordeaux-light: #b34052;
+  --color-gold: #c9a961;
+  --color-gold-light: #e4c884;
+  --color-gold-dark: #a88b47;
+  --color-cream: #fbf5ec;
+  --color-cream-dark: #f0e6d2;
+  --color-emerald: #2d5f4e;
+  --color-emerald-light: #3f7a64;
+  --color-ink: #2b1810;
+  --color-ink-muted: #7a6b5f;
+  --color-ink-light: #a89688;
+  --color-divider: #e8dcc4;
+
+  --font-display: "Cormorant Garamond", serif;
+  --font-arabic: "Amiri", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  background: #0a0a0a;
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Islamic pattern background */
+.pattern-bg {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%23C9A961' stroke-width='0.8' opacity='0.18'><polygon points='30,5 45,15 45,30 30,40 15,30 15,15'/><polygon points='30,20 40,25 40,35 30,40 20,35 20,25'/><line x1='30' y1='5' x2='30' y2='55'/><line x1='15' y1='15' x2='45' y2='30'/><line x1='45' y1='15' x2='15' y2='30'/></g></svg>");
+  background-size: 60px 60px;
+}
+
+/* Hide scrollbar in phone mockup */
+.phone-scroll::-webkit-scrollbar {
+  display: none;
+}
+.phone-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Gradient text */
+.gradient-gold {
+  background: linear-gradient(135deg, #c9a961 0%, #e4c884 50%, #c9a961 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ornamental divider */
+.divider-ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.divider-ornament::before,
+.divider-ornament::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(201, 169, 97, 0.5),
+    transparent
+  );
+}
+
+/* Shimmer effect for skeleton */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(240, 230, 210, 0.3) 0%,
+    rgba(251, 245, 236, 0.6) 50%,
+    rgba(240, 230, 210, 0.3) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

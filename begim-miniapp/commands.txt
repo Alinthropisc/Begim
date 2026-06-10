@@ -1,0 +1,8 @@
+# BotFather: /setcommands
+
+start - Boshlash va Mini App ochish
+help - Yordam
+myorders - Mening buyurtmalarim
+seller - Sotuvchi bo'lish
+cart - Savatchani ochish
+profile - Profil

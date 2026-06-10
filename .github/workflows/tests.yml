@@ -1,0 +1,93 @@
+name: 🧪 Integration Tests (MySQL + Redis)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  backend-integration:
+    name: 🐍 Backend Integration Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: begim-backend
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: begim
+          MYSQL_USER: begim
+          MYSQL_PASSWORD: begim
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install deps
+        run: uv sync --frozen
+
+      - name: Run migrations
+        run: uv run alembic upgrade head
+        env:
+          DATABASE_URL: mysql+aiomysql://begim:begim@127.0.0.1:3306/begim?charset=utf8mb4
+          DATABASE_URL_SYNC: mysql+pymysql://begim:begim@127.0.0.1:3306/begim?charset=utf8mb4
+          SECRET_KEY: ci-test-secret-key-minimum-32-chars!!
+          REDIS_URL: redis://127.0.0.1:6379/0
+          TELEGRAM_BOT_TOKEN: ""
+
+      - name: Seed reference data
+        run: uv run python -m scripts.seed
+        env:
+          DATABASE_URL: mysql+aiomysql://begim:begim@127.0.0.1:3306/begim?charset=utf8mb4
+          DATABASE_URL_SYNC: mysql+pymysql://begim:begim@127.0.0.1:3306/begim?charset=utf8mb4
+          SECRET_KEY: ci-test-secret-key-minimum-32-chars!!
+          REDIS_URL: redis://127.0.0.1:6379/0
+          TELEGRAM_BOT_TOKEN: ""
+
+      - name: Run all tests + coverage
+        run: uv run pytest -v --tb=short --cov=. --cov-report=term-missing --cov-report=xml
+        env:
+          APP_ENV: test
+          DATABASE_URL: mysql+aiomysql://begim:begim@127.0.0.1:3306/begim?charset=utf8mb4
+          DATABASE_URL_SYNC: mysql+pymysql://begim:begim@127.0.0.1:3306/begim?charset=utf8mb4
+          SECRET_KEY: ci-test-secret-key-minimum-32-chars!!
+          REDIS_URL: redis://127.0.0.1:6379/0
+          TELEGRAM_BOT_TOKEN: ""
+          USE_FAKEREDIS: "false"
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: begim-backend/coverage.xml
+          flags: backend
+          fail_ci_if_error: false

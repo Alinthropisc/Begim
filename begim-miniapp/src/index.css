@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@theme {
+  --color-begim-cream: #FBF5EC;
+  --color-begim-cream-dark: #F3E8D4;
+  --color-begim-bordeaux: #8B2635;
+  --color-begim-bordeaux-dark: #6B1A27;
+  --color-begim-gold: #C9A961;
+  --color-begim-gold-light: #E4CE8A;
+  --color-begim-emerald: #2D5F4E;
+  --color-begim-ink: #2B1810;
+  --color-begim-muted: #8B7355;
+
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-arabic: "Amiri", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body {
+  background-color: #FBF5EC;
+  color: #2B1810;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Islamic geometric pattern - subtle background */
+.begim-pattern {
+  background-color: #FBF5EC;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(201, 169, 97, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(139, 38, 53, 0.06) 0%, transparent 40%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23C9A961' stroke-opacity='0.18' stroke-width='1'><path d='M40 0 L80 40 L40 80 L0 40 Z'/><path d='M40 10 L70 40 L40 70 L10 40 Z'/><circle cx='40' cy='40' r='12'/><path d='M40 28 L52 40 L40 52 L28 40 Z'/></g></svg>");
+}
+
+.begim-pattern-dark {
+  background-color: #8B2635;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%23FBF5EC' stroke-opacity='0.12' stroke-width='1'><path d='M30 0 L60 30 L30 60 L0 30 Z'/><path d='M30 8 L52 30 L30 52 L8 30 Z'/><circle cx='30' cy='30' r='8'/></g></svg>");
+}
+
+.begim-ornament {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='40' viewBox='0 0 120 40'><g fill='none' stroke='%23C9A961' stroke-width='1.2'><path d='M0 20 Q15 0 30 20 T60 20 T90 20 T120 20'/><circle cx='15' cy='20' r='2' fill='%23C9A961'/><circle cx='45' cy='20' r='2' fill='%23C9A961'/><circle cx='75' cy='20' r='2' fill='%23C9A961'/><circle cx='105' cy='20' r='2' fill='%23C9A961'/></g></svg>");
+  background-repeat: repeat-x;
+  background-size: 120px 40px;
+}
+
+/* Elegant scrollbar */
+.begim-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.begim-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.begim-scroll::-webkit-scrollbar-thumb {
+  background: rgba(201, 169, 97, 0.4);
+  border-radius: 3px;
+}
+
+/* Safe area for Telegram Mini App */
+.pt-safe { padding-top: max(env(safe-area-inset-top), 0px); }
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeUp 0.35s ease-out both; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Gold shimmer text */
+.text-shimmer-gold {
+  background: linear-gradient(90deg, #C9A961 0%, #E4CE8A 25%, #C9A961 50%, #E4CE8A 75%, #C9A961 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Card hover */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(139, 38, 53, 0.25);
+}
+
+/* Button */
+.btn-begim {
+  background: linear-gradient(135deg, #8B2635 0%, #6B1A27 100%);
+  color: #FBF5EC;
+  transition: all 0.25s ease;
+}
+.btn-begim:hover {
+  box-shadow: 0 10px 30px -10px rgba(139, 38, 53, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #C9A961 0%, #E4CE8A 100%);
+  color: #2B1810;
+  transition: all 0.25s ease;
+}
+.btn-gold:hover {
+  box-shadow: 0 10px 30px -10px rgba(201, 169, 97, 0.6);
+}
+
+/* Hide scrollbar for category strip */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Arch decoration */
+.begim-arch {
+  border-top-left-radius: 50% 20%;
+  border-top-right-radius: 50% 20%;
+}
