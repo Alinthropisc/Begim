@@ -5,7 +5,7 @@
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from typing import Any
 
 from aiogram import Bot
@@ -92,9 +92,9 @@ async def publish_to_channel(ctx: dict[str, Any], product_id: int) -> dict[str, 
                     caption=text,
                     reply_markup=kb,
                 )
-                existing.last_edited_at = datetime.now(timezone.utc)
+                existing.last_edited_at = datetime.now(UTC)
                 return {"edited": True, "message_id": existing.message_id}
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning("edit failed, repost: {}", e)
                 # Удалим запись и попробуем опубликовать заново — пост мог быть удалён вручную.
                 await session.delete(existing)
@@ -112,7 +112,7 @@ async def publish_to_channel(ctx: dict[str, Any], product_id: int) -> dict[str, 
             product_id=product.id,
             channel_id=settings.global_channel_id,
             message_id=msg.message_id,
-            posted_at=datetime.now(timezone.utc),
+            posted_at=datetime.now(UTC),
         )
         session.add(cp)
         return {"published": True, "message_id": msg.message_id}
@@ -169,7 +169,7 @@ async def order_created(ctx: dict[str, Any], payload: dict[str, Any]) -> dict[st
                             f"Открыть в Mini App: {settings.mini_app_url}?startapp=o_{order.id}"
                         ),
                     )
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning("tg notify seller failed: {}", e)
 
     return {"ok": True}
@@ -216,7 +216,7 @@ async def order_status_changed(ctx: dict[str, Any], payload: dict[str, Any]) -> 
                             f"Подробнее: {settings.mini_app_url}?startapp=o_{order.id}"
                         ),
                     )
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning("tg notify buyer failed: {}", e)
 
     return {"ok": True}
@@ -249,7 +249,7 @@ async def payment_paid(ctx: dict[str, Any], payload: dict[str, Any]) -> dict[str
                         chat_id=buyer.tg_id,
                         text=f"✅ Оплата прошла. Заказ №{order.id} оплачен.",
                     )
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:
                     logger.warning("tg notify paid failed: {}", e)
     return {"ok": True}
 
@@ -276,7 +276,7 @@ async def unpublish_from_channel(ctx: dict[str, Any], product_id: int) -> dict[s
             return {"skipped": True}
         try:
             await bot.delete_message(chat_id=cp.channel_id, message_id=cp.message_id)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning("delete tg msg failed: {}", e)
         await session.delete(cp)
         return {"unpublished": True}

@@ -16,8 +16,9 @@ ChannelPost перед действием).
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Any, Sequence
+from datetime import datetime, timezone, UTC
+from typing import Any
+from collections.abc import Sequence
 
 from loguru import logger
 
@@ -182,7 +183,7 @@ class ProductService:
             self._assert_publishable(product)
 
             product.status = ProductStatus.PUBLISHED
-            product.published_at = datetime.now(timezone.utc)
+            product.published_at = datetime.now(UTC)
             await uow.flush()
             product_id_final = product.id
 
@@ -190,7 +191,7 @@ class ProductService:
         if self._enqueue_publish is not None:
             try:
                 await self._enqueue_publish(product_id_final)
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning("enqueue publish failed for product {}: {}", product_id_final, e)
         return product
 
@@ -235,5 +236,5 @@ class ProductService:
 
 
 class _NoOp(ProductSpec):
-    def apply(self, stmt):  # noqa: D401
+    def apply(self, stmt):
         return stmt

@@ -14,4 +14,4 @@ class CategoryOut(BaseModel):
     icon: str | None = None
     parent_id: int | None = None
     sort_order: int = 0
-    children: list["CategoryOut"] = []
+    children: list[CategoryOut] = []

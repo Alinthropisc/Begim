@@ -22,5 +22,6 @@
     }
   },
   "include": ["src", "../begim-shared"],
+  "exclude": ["node_modules", "../begim-shared/__tests__", "../begim-shared/vitest.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

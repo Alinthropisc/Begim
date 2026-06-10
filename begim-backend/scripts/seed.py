@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 
 from sqlalchemy import select
 
@@ -179,7 +179,7 @@ async def upsert_products() -> None:
         existing_titles = {
             t for (t,) in (await session.execute(select(Product.title))).all()
         }
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         added = 0
         for seller_slug, cat_slug, title, desc, price_sum, photo, tags in PRODUCTS:
             if title in existing_titles:

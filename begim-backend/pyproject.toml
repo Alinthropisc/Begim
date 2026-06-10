@@ -63,12 +63,23 @@ line-length = 320
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "UP", "B", "SIM", "RUF"]
-ignore = ["S101", "S104", "B008", "E501", "F401", "ANN001"]
+ignore = [
+    "S101", "S104", "B008", "E501", "F401", "ANN001",
+    # Russian text intentionally uses Cyrillic in docstrings/comments/strings
+    "RUF001", "RUF002", "RUF003",
+    # Litestar Controller.tags / .dependencies are framework class-level config, not mutable defaults
+    "RUF012",
+    # str+Enum pattern is fine; StrEnum changes MRO in some edge cases
+    "UP042",
+    # Generic[T] subclass syntax is fine
+    "UP046",
+]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "S106", "T20"]
+"tests/**" = ["S101", "S106", "T20", "SIM300"]
 "benchmarks/**" = ["T20"]
 "config/**" = ["F401", "E501"]
+"database/versions/**" = ["UP035", "UP007", "W291"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["app", "config"]

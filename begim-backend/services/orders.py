@@ -131,7 +131,7 @@ class OrderService:
 
     def __init__(
         self,
-        redis: "Redis | None" = None,
+        redis: Redis | None = None,
         uow_factory=UnitOfWork,
         enqueue_event=None,
         idempotency_ttl_sec: int = 60 * 60 * 24,
@@ -399,5 +399,5 @@ class OrderService:
                 from_status=from_status.value if from_status else None,
                 to_status=to_status.value,
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning("enqueue order event {} failed: {}", event, e)

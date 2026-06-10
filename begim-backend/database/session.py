@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 
 from loguru import logger
 from sqlalchemy import text
@@ -107,10 +107,8 @@ async def dispose_db() -> None:
 
     if _keepalive_task is not None:
         _keepalive_task.cancel()
-        try:
+        with suppress(asyncio.CancelledError, Exception):
             await _keepalive_task
-        except (asyncio.CancelledError, Exception):
-            pass
         _keepalive_task = None
 
     if _engine is not None:
@@ -149,7 +147,7 @@ async def _pool_keepalive_loop(interval_sec: int = 30) -> None:
                 await conn.execute(text("SELECT 1"))
         except asyncio.CancelledError:
             raise
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning("DB keepalive failed: {}", e)
 
 

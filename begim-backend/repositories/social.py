@@ -4,7 +4,7 @@
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 
 from sqlalchemy import desc, func, select
 
@@ -25,7 +25,7 @@ class StoryRepository(BaseRepository[Story]):
         либо от верифицированных продавцов того же города. Свежие первыми."""
         from models.seller_profile import SellerProfile
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         followed_subq = select(Follow.seller_id).where(Follow.follower_id == user_id)
         cond = [
             Story.expires_at > now,

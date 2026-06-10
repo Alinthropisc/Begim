@@ -45,7 +45,7 @@ class TestRatingValidation:
     @pytest.mark.parametrize("bad_rating", [0, -1, 6, 100])
     async def test_invalid_rating_raises(self, bad_rating):
         svc = ReviewService(uow_factory=_make_uow())
-        with pytest.raises(ReviewNotAllowed, match="rating must be 1..5"):
+        with pytest.raises(ReviewNotAllowed, match=r"rating must be 1\.\.5"):
             await svc.create(42, CreateReviewInput(order_id=1, rating=bad_rating))
 
     @pytest.mark.asyncio

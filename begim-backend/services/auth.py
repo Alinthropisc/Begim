@@ -68,7 +68,7 @@ class AuthService:
     Зависимости передаются конструктором → легко мокать в тестах.
     """
 
-    def __init__(self, redis: "Redis", uow_factory=UnitOfWork) -> None:
+    def __init__(self, redis: Redis, uow_factory=UnitOfWork) -> None:
         self._redis = redis
         self._uow_factory = uow_factory
 

@@ -1,7 +1,7 @@
 """Admin endpoints. Защита: проверяем role=admin в каждом handler'е."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 
 from litestar import Controller, get, patch, post
 from litestar.exceptions import NotFoundException
@@ -40,7 +40,7 @@ class AdminController(Controller):
             )).scalar_one())
             counts["orders_today"] = int((await uow.session.execute(
                 select(func.count(Order.id)).where(
-                    Order.created_at >= datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+                    Order.created_at >= datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
                 )
             )).scalar_one())
         return counts

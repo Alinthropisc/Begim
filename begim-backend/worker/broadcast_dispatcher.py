@@ -6,7 +6,7 @@ broadcast в `SENT`.
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from typing import Any
 
 from aiogram import Bot
@@ -56,7 +56,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
         ).all()
         if not rows:
             broadcast.status = BroadcastStatus.SENT
-            broadcast.sent_at = datetime.now(timezone.utc)
+            broadcast.sent_at = datetime.now(UTC)
             return {"done": True}
 
         delivery_ids = [int(r[0]) for r in rows]
@@ -90,7 +90,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
     kb = _make_keyboard(broadcast_id, cta_type, cta_product_id, cta_url)
     text_msg = _format_text(title, body)
 
-    for did, uid in zip(delivery_ids, user_ids):
+    for did, uid in zip(delivery_ids, user_ids, strict=False):
         user = users_map.get(uid)
         if user is None or user.is_blocked:
             deliveries_updates.append((did, BroadcastDeliveryStatus.SKIPPED.value, "user_unavailable"))
@@ -99,7 +99,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
             await bot.send_message(chat_id=user.tg_id, text=text_msg, reply_markup=kb)
             sent_ok += 1
             deliveries_updates.append((did, BroadcastDeliveryStatus.DELIVERED.value, None))
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             sent_fail += 1
             deliveries_updates.append((did, BroadcastDeliveryStatus.FAILED.value, str(e)[:200]))
 
@@ -111,7 +111,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
                 .where(BroadcastDelivery.id == did)
                 .values(
                     status=BroadcastDeliveryStatus(st),
-                    delivered_at=datetime.now(timezone.utc) if st == "delivered" else None,
+                    delivered_at=datetime.now(UTC) if st == "delivered" else None,
                     error_message=err,
                     attempts=BroadcastDelivery.attempts + 1,
                 )
@@ -131,7 +131,7 @@ async def dispatch_broadcast_chunk(ctx: dict[str, Any], payload: dict[str, Any])
                 {"broadcast_id": broadcast_id},
                 _defer_by=COOLDOWN_SEC,
             )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning("re-enqueue dispatch_broadcast_chunk failed: {}", e)
 
     return {"sent": sent_ok, "failed": sent_fail}

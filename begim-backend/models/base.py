@@ -30,7 +30,7 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=_NAMING_CONVENTION)
 
     @declared_attr.directive
-    def __tablename__(cls) -> str:  # noqa: N805
+    def __tablename__(cls) -> str:
         # CamelCase → snake_case + 's'
         name = cls.__name__
         snake = "".join(f"_{c.lower()}" if c.isupper() else c for c in name).lstrip("_")

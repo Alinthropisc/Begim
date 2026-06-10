@@ -78,7 +78,7 @@ class PaymeProvider(PaymentProvider):
             return False
         try:
             decoded = base64.b64decode(auth[6:]).decode("utf-8")
-        except Exception:  # noqa: BLE001
+        except Exception:
             return False
         if ":" not in decoded:
             return False

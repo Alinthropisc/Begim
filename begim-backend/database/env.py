@@ -14,7 +14,7 @@ from sqlalchemy import engine_from_config, pool
 
 # Подтягиваем настройки и регистрируем все модели в Base.metadata.
 from app.config import settings
-import models  # noqa: F401  — импорт нужен ради побочного эффекта (регистрация таблиц)
+import models
 from models.base import Base
 
 config = context.config

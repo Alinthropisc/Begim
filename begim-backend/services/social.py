@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, UTC
 from typing import Any
 
 from sqlalchemy.exc import IntegrityError
@@ -67,7 +67,7 @@ class StoryService:
                 tg_file_id=data.tg_file_id,
                 caption=data.caption,
                 product_id=data.product_id,
-                expires_at=datetime.now(timezone.utc) + timedelta(hours=settings.story_ttl_hours),
+                expires_at=datetime.now(UTC) + timedelta(hours=settings.story_ttl_hours),
             )
             uow.session.add(story)
             await uow.flush()
@@ -310,7 +310,7 @@ class NotificationService:
             if n is None or n.user_id != user_id:
                 raise NotFound("notification not found")
             if n.read_at is None:
-                n.read_at = datetime.now(timezone.utc)
+                n.read_at = datetime.now(UTC)
 
     async def mark_all_read(self, user_id: int) -> int:
         async with self._uow_factory() as uow:
@@ -318,7 +318,7 @@ class NotificationService:
 
             from models.notification import Notification
 
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             stmt = (
                 update(Notification)
                 .where(Notification.user_id == user_id, Notification.read_at.is_(None))

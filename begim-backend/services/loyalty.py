@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import secrets
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timezone, UTC
 from typing import Any
 
 from loguru import logger
@@ -102,7 +102,7 @@ class SellerGroupService:
                 user_id=user_id,
                 source=GroupMemberSource.INVITE,
                 opt_in_marketing=True,   # join по приглашению = осознанный opt-in
-                opt_in_at=datetime.now(timezone.utc),
+                opt_in_at=datetime.now(UTC),
                 channels={"telegram_dm": True, "in_app_push": True},
             )
             uow.session.add(member)
@@ -387,7 +387,7 @@ class BroadcastService:
         if self._enqueue is not None and count > 0:
             try:
                 await self._enqueue("dispatch_broadcast_chunk", {"broadcast_id": b_id})
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning("enqueue broadcast dispatch failed: {}", e)
 
         async with self._uow_factory() as uow:
@@ -417,7 +417,7 @@ class BroadcastService:
 
     async def track_click(self, broadcast_id: int, user_id: int) -> None:
         async with self._uow_factory() as uow:
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             stmt = (
                 update(BroadcastDelivery)
                 .where(

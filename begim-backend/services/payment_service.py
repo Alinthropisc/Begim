@@ -181,7 +181,7 @@ class PaymentService:
                         from_status="paid",
                         to_status="refunded",
                     )
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning("enqueue payment event failed: {}", e)
 
     # ----- helpers -----

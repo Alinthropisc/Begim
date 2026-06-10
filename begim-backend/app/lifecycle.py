@@ -11,8 +11,9 @@ from __future__ import annotations
 
 import asyncio
 import os
-from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, AsyncIterator
+from contextlib import asynccontextmanager, suppress
+from typing import TYPE_CHECKING
+from collections.abc import AsyncIterator
 
 from litestar import Litestar
 from litestar.config.cors import CORSConfig
@@ -27,26 +28,26 @@ if TYPE_CHECKING:
 
 
 # ----- Глобальные ресурсы -----
-_redis: "Redis | None" = None
-_arq: "ArqRedis | None" = None
-_bot: "Bot | None" = None
-_dp: "Dispatcher | None" = None
+_redis: Redis | None = None
+_arq: ArqRedis | None = None
+_bot: Bot | None = None
+_dp: Dispatcher | None = None
 _polling_task: asyncio.Task | None = None
 
 
-def get_redis() -> "Redis":
+def get_redis() -> Redis:
     if _redis is None:
         raise RuntimeError("Redis не инициализирован")
     return _redis
 
 
-def get_arq() -> "ArqRedis":
+def get_arq() -> ArqRedis:
     if _arq is None:
         raise RuntimeError("arq pool не инициализирован")
     return _arq
 
 
-def get_bot() -> "Bot":
+def get_bot() -> Bot:
     if _bot is None:
         raise RuntimeError("Bot не инициализирован (TELEGRAM_BOT_TOKEN не задан?)")
     return _bot
@@ -121,10 +122,8 @@ async def _close_bot() -> None:
     global _bot, _dp, _polling_task
     if _polling_task is not None:
         _polling_task.cancel()
-        try:
+        with suppress(asyncio.CancelledError, Exception):
             await _polling_task
-        except (asyncio.CancelledError, Exception):
-            pass
         _polling_task = None
     if _dp is not None:
         await _dp.stop_polling()
@@ -160,7 +159,7 @@ async def lifespan(app: Litestar) -> AsyncIterator[None]:
     try:
         await _init_bot()
         await _start_bot_polling()
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         # Бот опционален в dev: лучше поднять API без него, чем уронить весь сервис.
         logger.warning("Bot init failed: {} (продолжаю без бота)", e)
 

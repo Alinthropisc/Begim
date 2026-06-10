@@ -1,4 +1,5 @@
-from typing import TypeVar, Generic, Sequence, Any
+from typing import TypeVar, Generic, Any
+from collections.abc import Sequence
 from sqlalchemy import select, update, delete, func, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
@@ -204,10 +205,7 @@ class BaseRepository(Generic[ModelType]):
                 elif operator == "ilike":
                     stmt = stmt.where(column.ilike(f"%{value}%"))
                 elif operator == "is_null":
-                    if value:
-                        stmt = stmt.where(column.is_(None))
-                    else:
-                        stmt = stmt.where(column.isnot(None))
+                    stmt = stmt.where(column.is_(None)) if value else stmt.where(column.isnot(None))
                 elif operator == "ne":
                     stmt = stmt.where(column != value)
             else:

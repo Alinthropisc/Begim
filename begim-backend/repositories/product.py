@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Sequence
+from collections.abc import Sequence
 
 from sqlalchemy import Select, desc, func, select, text
 from sqlalchemy.orm import selectinload
@@ -22,10 +22,10 @@ from repositories.base_repository import BaseRepository
 class ProductSpec:
     """Базовый интерфейс спецификации."""
 
-    def apply(self, stmt: Select) -> Select:  # noqa: D401
+    def apply(self, stmt: Select) -> Select:
         return stmt
 
-    def __and__(self, other: "ProductSpec") -> "ProductSpec":
+    def __and__(self, other: ProductSpec) -> ProductSpec:
         return _AndSpec(self, other)
 
 
